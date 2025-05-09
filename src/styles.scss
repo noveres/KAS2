@@ -1,0 +1,51 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+// 顏色變量
+$colors: (
+  // 主題色
+  primary: #4a7dff,
+  secondary: #212143,
+
+  // 背景色
+  bg-primary: #f8f9fa,
+  bg-secondary: #FFFFFF,
+  bg-sidebar: #1e2130,
+  bg-hover: rgba(255, 255, 255, 0.1),
+  bg-active: rgba(255, 255, 255, 0.15),
+  bg-submenu: rgba(0, 0, 0, 0.2),
+  bg-active-link: #f0f7ff,
+
+  // 文字色
+  text-primary: #333,
+  text-secondary: #888,
+  text-light: #ffffff,
+
+  // 邊框和陰影
+  border-light: rgba(255, 255, 255, 0.1),
+  shadow-header: rgba(0, 0, 0, 0.1),
+  shadow-sidebar: rgba(0, 0, 0, 0.15),
+  shadow-content: rgba(0, 0, 0, 0.05)
+);
+
+// 獲取顏色函數
+@function color($key) {
+  @return map-get($colors, $key);
+}
+
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
