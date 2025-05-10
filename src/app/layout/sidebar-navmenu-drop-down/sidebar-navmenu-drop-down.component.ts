@@ -31,11 +31,23 @@ import { Subscription } from 'rxjs';
 })
 export class SidebarNAVmenuDropDownComponent {
 
+//客製化組件選擇
+isPCMenuToggleEnabled = false; //使否啟用PC漢堡選單
+isMobileMenuToggleEnabled = true; //使否啟用移動端漢堡選單
+isMenuToggleOnVisible = true; //是否啟用關閉狀態的menu-toggle
+isMenuToggleOffVisible = true; //是否啟用開啟狀態的menu-toggle
+
+
+
  // 側邊欄相關
  isSidebarActive = true;
  isLoginPage = false;
  currentPage = '儀表板';
  activeSubmenu: string | null = null; // 當前活動的子菜單
+
+
+
+
 
  // 用戶信息
  userName = '系統管理員';

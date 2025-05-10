@@ -44,13 +44,36 @@
       }
   }
 
+  .pc-menutoggle {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 8px 8px;
+    border-radius: 50%;
+    transition: color 0.3s ease, background-color 0.3s ease;
+  
+    &:hover {
+      background-color:color(butt-hove-color); 
+ 
+    }
+  
+    &:active {
+      transform: scale(0.96); // 按下時有輕微縮放效果
+    }
+    // &:focus {
+    //   outline: none;
+    //   box-shadow: 0 0 0 2px rgba(100, 150, 250, 0.4); // 有無障礙焦點狀態
+    // }
+  }
+  
   .header-right {
       display: flex;
       align-items: center;
       gap: 20px;
 
       .mobile-menu-toggle {
-          // display: none;
+          display: none;
           background: none;
           border: none;
           color: currentcolor;

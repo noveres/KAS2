@@ -38,7 +38,10 @@ $colors: (
   border-sidebar: rgba(255, 255, 255, 0.1),
   shadow-header: rgba(0, 0, 0, 0.1),
   shadow-sidebar: rgba(0, 0, 0, 0.15),
-  shadow-content: rgba(0, 0, 0, 0.05)
+  shadow-content: rgba(0, 0, 0, 0.05),
+
+  //互動色
+  butt-hove-color: rgba(0, 0, 0, 0.05) 
 );
 
 // 獲取顏色函數
