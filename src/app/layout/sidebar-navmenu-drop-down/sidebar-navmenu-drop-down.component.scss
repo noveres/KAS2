@@ -121,7 +121,10 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid color(border-sidebar);
-    position: relative;
+    position: sticky;
+    top: 0;
+    background-color: color(bg-sidebar);
+    z-index: 10;
 
     .avatar-container {
       position: relative;
@@ -160,6 +163,8 @@
     }
 
     .menu-toggle {
+      position: absolute;
+      right: 16px;
       background: none;
       border: none;
       cursor: pointer;
@@ -478,10 +483,25 @@
           .user-info {
               display: none;
           }
+     
 
-          // .menu-toggle {
-          //     margin-top: 10px;
-          // }
+          .menu-toggle {
+            right: -33px;
+            top: 28px;
+            background-color: color(bg-sidebar);
+            border-radius: 0 50% 50% 0;
+            padding: 6px 8px 6px 4px;
+            z-index: 1;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border-left: 2px solid color(primary);
+            
+            &:hover {
+              background-color: color(bg-sidebar-hover);
+              box-shadow: 3px 0 8px rgba(0, 0, 0, 0.3);
+            }
+
+          }
       }
 
       .nav-menu ul li {
