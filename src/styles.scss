@@ -3,6 +3,17 @@
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
 // 顏色變量
 $colors: (
   // 主題色
@@ -12,24 +23,25 @@ $colors: (
   // 背景色
   bg-primary: #f8f9fa,
   bg-secondary: #FFFFFF,
-  bg-sidebar: #1e2130,
-  bg-hover: rgba(255, 255, 255, 0.1),
-  bg-active: rgba(255, 255, 255, 0.15),
-  bg-submenu: rgba(0, 0, 0, 0.2),
-  bg-active-link: #f0f7ff,
+  bg-sidebar: #111827,
+  bg-sidebar-hover: #1f2937,
+  bg-sidebar-avatar: #374151,
 
   // 文字色
   text-primary: #333,
   text-secondary: #888,
   text-light: #ffffff,
+  text-sidebar: #e5e7eb,
+  text-sidebar-secondary: #9ca3af,
 
   // 邊框和陰影
-  border-light: rgba(255, 255, 255, 0.1),
+  border-sidebar: rgba(255, 255, 255, 0.1),
   shadow-header: rgba(0, 0, 0, 0.1),
   shadow-sidebar: rgba(0, 0, 0, 0.15),
   shadow-content: rgba(0, 0, 0, 0.05)
 );
 
+// 獲取顏色函數
 // 獲取顏色函數
 @function color($key) {
   @return map-get($colors, $key);

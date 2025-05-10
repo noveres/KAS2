@@ -1,4 +1,4 @@
-@import "../../styles.scss";
+@use '../../../styles' as *;
 
 :host {
   display: block;
@@ -105,21 +105,22 @@
 
 // 側邊欄
 .sidebar {
-  width: 256px; // 調整為與 React 版本一致的寬度
+  width: 256px;
   height: 100%;
-  background-color: #111827; // 使用與 React 版本相同的深灰色
-  color: #e5e7eb; // 淺灰色文字
+  background-color: color(bg-sidebar);
+  color: color(text-sidebar);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s ease, box-shadow 0.5s ease;
   z-index: 5;
+  transform: translateX(0);
   // 用戶資料
   .user-profile {
     padding: 16px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid color(border-sidebar);
     position: relative;
 
     .avatar-container {
@@ -130,7 +131,7 @@
         height: 40px;
         border-radius: 50%;
         overflow: hidden;
-        background-color: #374151;
+        background-color: color(bg-sidebar-avatar);
 
         img {
           width: 100%;
@@ -142,16 +143,19 @@
     .user-info {
       margin-left: 12px;
       flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       .user-name {
         font-weight: 600;
         font-size: 14px;
-        color: #e5e7eb;
+        color: color(text-sidebar);
       }
 
       .user-role {
         font-size: 12px;
-        color: #9ca3af;
+        color: color(text-sidebar-secondary);
       }
     }
 
@@ -159,10 +163,10 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: #9ca3af;
+      color: color(text-sidebar-secondary);
 
       &:hover {
-        color: #e5e7eb;
+        color: color(text-sidebar);
       }
     }
   }
@@ -190,7 +194,7 @@
             background-color: transparent;
 
             &.active {
-              background-color: #1f2937;
+              background-color: color(bg-sidebar-hover);
             }
           }
 
@@ -205,6 +209,7 @@
 
             &.active {
               max-height: 500px;
+              opacity: 1;
               margin-top: 4px;
               margin-bottom: 4px;
             }
@@ -230,15 +235,16 @@
           display: flex;
           align-items: center;
           padding: 8px 12px;
-          color: #9ca3af; // 默認淺灰色
+          color: color(text-sidebar-secondary); // 默認淺灰色
           text-decoration: none;
           transition: all 0.2s ease;
           position: relative;
           border-radius: 6px;
+          
 
           &:hover {
             background-color: #1f2937;
-            color: #e5e7eb;
+            color: color(text-sidebar);
           }
 
           &.active {
@@ -256,9 +262,28 @@
 
           span {
             flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
       }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 240px;
+    transform: translateX(-100%);
+    z-index: 1000;
+    box-shadow: 2px 0 10px color(shadow-sidebar);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    &.active {
+      transform: translateX(0);
     }
   }
 }
@@ -439,36 +464,43 @@
   }
 }
 
-// 側邊欄折疊狀態
+// 側邊欄收合的CSS
 .sidebar-collapsed {
   .sidebar {
       width: 72px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
 
       .user-profile {
           flex-direction: column;
           align-items: center;
-          padding: 15px 5px;
+          // padding: 15px 5px;
 
           .user-info {
               display: none;
           }
 
-          .menu-toggle {
-              margin-top: 10px;
-          }
+          // .menu-toggle {
+          //     margin-top: 10px;
+          // }
       }
 
-      .nav-menu ul li a {
-          padding: 12px;
-          justify-content: center;
+      .nav-menu ul li {
+          a {
+              // padding: 12px;
+              justify-content: center;
 
-          svg {
-              margin-right: 0;
+              svg {
+                  margin-right: 0;
+              }
+
+              span,
+              .submenu-arrow {
+                  display: none;
+              }
           }
 
-          span,
-          .submenu-arrow {
-              display: none;
+          &.menu-item-with-submenu .submenu {
+              margin-left: 0;
           }
       }
   }
