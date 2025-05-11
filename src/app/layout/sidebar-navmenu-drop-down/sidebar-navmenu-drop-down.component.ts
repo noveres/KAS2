@@ -31,7 +31,7 @@ import { Subscription } from 'rxjs';
 })
 export class SidebarNAVmenuDropDownComponent {
 
-//客製化組件選擇
+//客製化組件選擇，調整true/false決定使用那些組件樣式
 isPCMenuToggleEnabled = false; //使否啟用PC漢堡選單
 isMobileMenuToggleEnabled = true; //使否啟用移動端漢堡選單
 isMenuToggleOnVisible = true; //是否啟用關閉狀態的menu-toggle
