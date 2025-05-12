@@ -34,7 +34,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/asset-management/asset-stamp/asset-stamp.component').then(m => m.AssetStampComponent),
     //canActivate: [AuthGuard]
   },
-  // 主機維護路由
+  // 主件維護路由
   {
     path: 'company-info',
     loadComponent: () => import('./pages/server-maintenance/company-info/company-info.component').then(m => m.CompanyInfoComponent),
@@ -50,6 +50,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/server-maintenance/role-list/role-list.component').then(m => m.RoleListComponent),
     // canActivate: [AuthGuard]
   },
- 
+
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];

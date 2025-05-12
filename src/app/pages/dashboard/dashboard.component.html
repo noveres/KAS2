@@ -1,1 +1,80 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <!-- Top Metrics -->
+  <div class="metrics-row">
+    <mat-card *ngFor="let metric of metrics" class="metric-card" [ngClass]="'mat-' + metric.color">
+      <div class="metric-icon-container">
+        <mat-icon>{{metric.icon}}</mat-icon>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{metric.value}}</div>
+        <div class="metric-label">{{metric.label}}</div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Tab Navigation -->
+  <mat-tab-group class="dashboard-tabs">
+    <mat-tab label="資產展示">
+      <div class="tab-content">
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <!-- Asset Category Distribution -->
+          <div class="chart-section">
+            <div class="chart-header">
+              <h2 class="chart-title">資產分類分布</h2>
+              <p class="chart-subtitle">依資產分類統計數量</p>
+            </div>
+            <div class="chart-content">
+              <div class="chart-container">
+                <!-- Chart.js Pie Chart -->
+                <div class="chart-box">
+                  <canvas #categoryChart></canvas>
+                </div>
+              </div>
+              <div class="chart-metrics">
+                <div *ngFor="let item of assetCategories" class="chart-metric-item">
+                  <div class="color-indicator" [style.background-color]="item.color"></div>
+                  <div class="metric-info">
+                    <span class="metric-label">{{item.label}}</span>
+                    <span class="metric-value">{{item.value}}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Asset Status Distribution -->
+          <div class="chart-section">
+            <div class="chart-header">
+              <h2 class="chart-title">資產狀態分布</h2>
+              <p class="chart-subtitle">依資產狀態統計數量</p>
+            </div>
+            <div class="chart-content">
+              <div class="chart-container">
+                <!-- Chart.js Pie Chart -->
+                <div class="chart-box">
+                  <canvas #statusChart></canvas>
+                </div>
+              </div>
+              <div class="chart-metrics">
+                <div *ngFor="let item of assetStatuses" class="chart-metric-item">
+                  <div class="color-indicator" [style.background-color]="item.color"></div>
+                  <div class="metric-info">
+                    <span class="metric-label">{{item.label}}</span>
+                    <span class="metric-value">{{item.value}}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="月度報告">
+      <div class="tab-content">
+        <p>月度報告內容將在此顯示</p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

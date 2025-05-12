@@ -1,0 +1,307 @@
+.dashboard-container {
+  padding: 16px;
+
+  .metrics-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+
+    .metric-card {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+
+      &.mat-primary .metric-icon-container {
+        background-color: #1e88e5;
+      }
+
+      &.mat-accent .metric-icon-container {
+        background-color: #26a69a;
+      }
+
+      &.mat-warn .metric-icon-container {
+        background-color: #ef5350;
+      }
+
+      .metric-icon-container {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+
+        mat-icon {
+          color: white;
+        }
+      }
+
+      .metric-content {
+        .metric-value {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 4px;
+        }
+
+        .metric-label {
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+    }
+  }
+
+  .dashboard-tabs {
+    margin-bottom: 16px;
+
+    .tab-content {
+      padding: 16px 0;
+    }
+  }
+
+  .charts-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+
+    .chart-section {
+      flex: 1;
+      min-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: visible !important;
+
+      .chart-header {
+        margin-bottom: 20px;
+
+        .chart-title {
+          font-size: 20px;
+          font-weight: 500;
+          margin: 0 0 4px 0;
+          color: rgba(0, 0, 0, 0.87);
+        }
+
+        .chart-subtitle {
+          font-size: 14px;
+          margin: 0;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+
+      .chart-content {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+
+        @media (max-width: 768px) {
+          flex-direction: row;
+        }
+      }
+
+      .chart-metrics {
+        min-width: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding-top: 20px;
+
+        .chart-metric-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            flex-shrink: 0;
+          }
+
+          .metric-info {
+            display: flex;
+            flex-direction: column;
+
+            .metric-label {
+              font-size: 14px;
+              color: rgba(0, 0, 0, 0.87);
+            }
+
+            .metric-value {
+              font-size: 16px;
+              font-weight: 500;
+              color: rgba(0, 0, 0, 0.7);
+            }
+          }
+        }
+      }
+    }
+
+    .chart-card {
+      flex: 1;
+      min-width: 500px;
+      margin: 0 auto;
+      overflow: visible !important;
+
+      mat-card-header {
+        margin-bottom: 16px;
+      }
+
+      mat-card-content {
+        overflow: visible !important;
+      }
+    }
+  }
+
+  .chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    overflow: visible !important;
+    flex: 1;
+
+    .chart-box {
+      width: 100%;
+      height: 300px;
+      position: relative;
+      border-radius: 8px;
+      z-index: 1;
+      overflow: visible !important;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  // 全局樣式覆蓋，確保標籤高於容器
+  :host ::ng-deep {
+    .chart-container {
+      canvas {
+        overflow: visible !important;
+      }
+
+      // 美化標籤
+      .chartjs-datalabels {
+        z-index: 10 !important;
+        pointer-events: none;
+
+        // 標籤文字效果
+        font-weight: 600 !important;
+        text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+
+        // 標籤背景
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        padding: 4px 8px !important;
+
+        // 標籤連線
+        &:before {
+          content: '';
+          position: absolute;
+          width: 15px;
+          height: 1px;
+          background: rgba(0, 0, 0, 0.3);
+          z-index: -1;
+          transform-origin: 0 50%;
+        }
+      }
+    }
+  }
+
+  .task-card {
+    margin-bottom: 16px;
+
+    mat-list-item {
+      height: auto;
+      padding: 12px 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+
+      .task-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 16px;
+        flex-shrink: 0;
+
+        &.mat-primary {
+          background-color: rgba(30, 136, 229, 0.1);
+
+          mat-icon {
+            color: #1e88e5;
+          }
+        }
+
+        &.mat-warn {
+          background-color: rgba(239, 83, 80, 0.1);
+
+          mat-icon {
+            color: #ef5350;
+          }
+        }
+      }
+
+      .task-content {
+        flex: 1;
+
+        .task-title {
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+
+        .task-description {
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+      }
+    }
+  }
+}
+
+// Fix Angular Material styles
+:host ::ng-deep {
+  .mat-mdc-card-header {
+    padding: 16px 16px 0 16px;
+  }
+
+  .mat-mdc-card-content {
+    padding: 16px;
+  }
+
+  .mat-mdc-tab-label-content {
+    font-size: 16px;
+  }
+
+  .mat-mdc-list-item {
+    height: auto !important;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
