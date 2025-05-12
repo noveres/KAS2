@@ -11,6 +11,13 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 Chart.register(ChartDataLabels);
 
+// Define interfaces for our data types
+interface ChartDataItem {
+  label: string;
+  value: number;
+  color?: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -24,7 +31,7 @@ Chart.register(ChartDataLabels);
     MatListModule
   ],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('categoryChart') private categoryChartRef!: ElementRef;
@@ -59,7 +66,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ];
 
   // Asset Category Distribution Data
-  assetCategories = [
+  assetCategories: ChartDataItem[] = [
     { label: '電腦設備', value: 41 },
     { label: '辦公家具', value: 28 },
     { label: '照明設備', value: 14 },
@@ -68,7 +75,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ];
 
   // Asset Status Distribution Data
-  assetStatuses = [
+  assetStatuses: ChartDataItem[] = [
     { label: '正常使用', value: 69 },
     { label: '閒置', value: 9 },
     { label: '待修中', value: 5 },

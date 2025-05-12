@@ -33,7 +33,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 16px;
+        margin-right: 12px;
 
         mat-icon {
           color: white;
@@ -44,7 +44,7 @@
         .metric-value {
           font-size: 24px;
           font-weight: bold;
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .metric-label {
@@ -65,22 +65,22 @@
 
   .charts-row {
     display: flex;
-    gap: 24px;
-    margin-bottom: 24px;
+    gap: 16px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
 
     .chart-section {
       flex: 1;
       min-width: 500px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px;
       background-color: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       overflow: visible !important;
 
       .chart-header {
-        margin-bottom: 20px;
+        margin-bottom: 12px;
 
         .chart-title {
           font-size: 20px;
@@ -101,7 +101,7 @@
         flex-direction: row;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 20px;
+        gap: 12px;
 
         @media (max-width: 768px) {
           flex-direction: row;
@@ -226,11 +226,11 @@
   }
 
   .task-card {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 
     mat-list-item {
       height: auto;
-      padding: 12px 0;
+      padding: 8px 0;
     }
 
     .task-item {
@@ -245,7 +245,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        margin-right: 16px;
+        margin-right: 12px;
         flex-shrink: 0;
 
         &.mat-primary {
@@ -270,7 +270,7 @@
 
         .task-title {
           font-weight: 500;
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .task-description {
