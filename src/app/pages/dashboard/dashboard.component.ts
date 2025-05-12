@@ -43,10 +43,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   // Summary metrics
   metrics = [
-    { icon: 'inventory_2', value: 290, label: '標籤資產量', color: 'primary' },
-    { icon: 'warning', value: 15, label: '預維保資產', color: 'warn' },
-    { icon: 'trending_up', value: 22, label: '本月新增資產', color: 'accent' },
-    { icon: 'schedule', value: 8, label: '即將到期排程', color: 'warn' }
+    { icon: 'home', value: 290, label: '標籤資產量', color: 'primary', trend: 3.2 },
+    { icon: 'settings', value: 15, label: '預維保資產', color: 'warn', trend: -1.5 },
+    { icon: 'person', value: 22, label: '本月新增資產', color: 'accent', trend: 5.8 },
+    { icon: 'notifications', value: 8, label: '即將到期排程', color: 'warn', trend: 0 }
   ];
 
   // Dynamic color palette
