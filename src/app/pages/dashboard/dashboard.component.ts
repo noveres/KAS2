@@ -137,6 +137,40 @@ export class DashboardComponent implements OnInit, AfterViewInit {
    * 初始化所有圖表
    */
   private initializeCharts(): void {
+    // Set up plugin for line connections
+    Chart.register({
+      id: 'datalabelsLine',
+      beforeDraw: (chart: any) => {
+        const ctx = chart.ctx;
+        // Get data
+        const meta = chart.getDatasetMeta(0);
+        // Loop through data points
+        for (let i = 0; i < meta.data.length; i++) {
+          // Get pie center and data point
+          const pieCenter = meta.data[i].getCenterPoint();
+          // Get label position - calculate this based on bounding boxes if possible
+          // For now we're estimating based on data and chart size
+          const labelX = pieCenter.x + 80 * Math.cos((meta.data[i].startAngle + meta.data[i].endAngle) / 2);
+          const labelY = pieCenter.y + 80 * Math.sin((meta.data[i].startAngle + meta.data[i].endAngle) / 2);
+
+          // Get color from data point
+          const dataset = chart.data.datasets[0];
+          const color = Array.isArray(dataset.backgroundColor) ?
+            dataset.backgroundColor[i] : dataset.backgroundColor;
+
+          // Draw connecting line
+          ctx.save();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(pieCenter.x, pieCenter.y);
+          ctx.lineTo(labelX, labelY);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    });
+
     this.initializeCategoryChart();
     this.initializeStatusChart();
   }
@@ -162,7 +196,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           data: this.assetCategories.map(cat => cat.value),
           backgroundColor: this.assetCategories.map(cat => cat.color),
           borderColor: 'white',
-          borderWidth: 2
+          borderWidth: 2,
+          // Add custom connectors
+          datalabels: {
+            // Use default color and offset
+          }
         }]
       },
       options: {
@@ -170,8 +208,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         layout: {
           padding: {
-            top: 30,
-            bottom: 30,
+            top: 50,
+            bottom: 50,
             left: 10,
             right: 10
           }
@@ -190,26 +228,35 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             }
           },
           datalabels: {
-            color: '#333',
+            // Text style
+            color: 'white',
             font: {
               weight: 'bold',
               size: 13
             },
+            // Label content
             formatter: (value: number, context: any) => {
               const total = context.chart.data.datasets[0].data.reduce((a: number, b: number) => a + b, 0);
               const percent = total > 0 ? Math.round((value / total) * 100) : 0;
-              return `${percent}%`;
+              return `${context.chart.data.labels[context.dataIndex]}\n${percent}%`;
             },
+            // Position
             anchor: 'end',
             align: 'end',
-            offset: 8,
+            offset: 16,
+            // Style
             borderRadius: 4,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-            borderWidth: 1,
+            backgroundColor: function(context: any) {
+              // Safely access background color
+              const bgColors = context.dataset.backgroundColor;
+              return Array.isArray(bgColors) ? bgColors[context.dataIndex] : bgColors;
+            },
+            borderWidth: 0,
             clamp: false,
             display: true,
-            padding: 6
+            padding: 6,
+            // Text alignment
+            textAlign: 'start'
           }
         }
       }
@@ -237,7 +284,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           data: this.assetStatuses.map(status => status.value),
           backgroundColor: this.assetStatuses.map(status => status.color),
           borderColor: 'white',
-          borderWidth: 2
+          borderWidth: 2,
+          // Add custom connectors
+          datalabels: {
+            // Use default color and offset
+          }
         }]
       },
       options: {
@@ -245,8 +296,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         layout: {
           padding: {
-            top: 30,
-            bottom: 30,
+            top: 50,
+            bottom: 50,
             left: 10,
             right: 10
           }
@@ -271,26 +322,35 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             }
           },
           datalabels: {
-            color: '#333',
+            // Text style
+            color: 'white',
             font: {
               weight: 'bold',
               size: 13
             },
+            // Label content
             formatter: (value: number, context: any) => {
               const total = context.chart.data.datasets[0].data.reduce((a: number, b: number) => a + b, 0);
               const percent = total > 0 ? Math.round((value / total) * 100) : 0;
-              return `${percent}%`;
+              return `${context.chart.data.labels[context.dataIndex]}\n${percent}%`;
             },
+            // Position
             anchor: 'end',
             align: 'end',
-            offset: 8,
+            offset: 16,
+            // Style
             borderRadius: 4,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-            borderWidth: 1,
+            backgroundColor: function(context: any) {
+              // Safely access background color
+              const bgColors = context.dataset.backgroundColor;
+              return Array.isArray(bgColors) ? bgColors[context.dataIndex] : bgColors;
+            },
+            borderWidth: 0,
             clamp: false,
             display: true,
-            padding: 6
+            padding: 6,
+            // Text alignment
+            textAlign: 'start'
           }
         }
       }
