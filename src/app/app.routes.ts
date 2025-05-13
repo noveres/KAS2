@@ -30,6 +30,11 @@ export const routes: Routes = [
     // canActivate: [AuthGuard]
   },
   {
+    path: 'asset-query',
+    loadComponent: () => import('./pages/asset-management/asset-query/asset-query.component').then(m => m.AssetQueryComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
     path: 'asset-stamp',
     loadComponent: () => import('./pages/asset-management/asset-stamp/asset-stamp.component').then(m => m.AssetStampComponent),
     //canActivate: [AuthGuard]
@@ -46,8 +51,33 @@ export const routes: Routes = [
     // canActivate: [AuthGuard]
   },
   {
-    path: 'role-list',
-    loadComponent: () => import('./pages/server-maintenance/role-list/role-list.component').then(m => m.RoleListComponent),
+    path: 'asset-location',
+    loadComponent: () => import('./pages/server-maintenance/asset-location/asset-location.component').then(m => m.AssetLocationComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'asset-category',
+    loadComponent: () => import('./pages/server-maintenance/asset-category/asset-category.component').then(m => m.AssetCategoryComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'asset-status',
+    loadComponent: () => import('./pages/server-maintenance/asset-status/asset-status.component').then(m => m.AssetStatusComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'asset-source',
+    loadComponent: () => import('./pages/server-maintenance/asset-source/asset-source.component').then(m => m.AssetSourceComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'user-role',
+    loadComponent: () => import('./pages/server-maintenance/user-role/user-role.component').then(m => m.UserRoleComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'user-account',
+    loadComponent: () => import('./pages/server-maintenance/user-account/user-account.component').then(m => m.UserAccountComponent),
     // canActivate: [AuthGuard]
   },
 

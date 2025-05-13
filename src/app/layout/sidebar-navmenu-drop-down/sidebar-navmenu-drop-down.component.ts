@@ -10,6 +10,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { Subscription } from 'rxjs';
+import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 @Component({
   selector: 'sidebar-navmenu-drop-down',
   imports: [
@@ -25,6 +26,7 @@ import { Subscription } from 'rxjs';
     MatListModule,
     MatMenuModule,
     MatDividerModule,
+    LanguageSelectorComponent,
   ],
   templateUrl: './sidebar-navmenu-drop-down.component.html',
   styleUrl: './sidebar-navmenu-drop-down.component.scss'
@@ -43,6 +45,7 @@ isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
  isLoginPage = false;
  currentPage = '儀表板';
  activeSubmenu: string | null = null; // 當前活動的子菜單
+ expandedMenus: string[] = []; // 存儲所有展開的子選單
  isHovering = false; // 是否正在懸停
 
 
@@ -84,6 +87,16 @@ isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
    const savedSidebarState = localStorage.getItem('sidebarActive');
    if (savedSidebarState !== null) {
      this.isSidebarActive = savedSidebarState === 'true';
+   }
+
+   // 從 localStorage 獲取子選單展開狀態
+   const savedExpandedMenus = localStorage.getItem('expandedMenus');
+   if (savedExpandedMenus) {
+     this.expandedMenus = JSON.parse(savedExpandedMenus);
+     // 如果有已保存的展開子選單，設置 activeSubmenu 為第一個
+     if (this.expandedMenus.length > 0) {
+       this.activeSubmenu = this.expandedMenus[0];
+     }
    }
 
    // // 訂閱頭像更新
@@ -157,9 +170,22 @@ isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
  toggleSubmenu(menuName: string): void {
    if (this.activeSubmenu === menuName) {
      this.activeSubmenu = null; // 如果點擊的是當前打開的子菜單，則關閉它
+     // 從展開列表中移除
+     this.expandedMenus = this.expandedMenus.filter(menu => menu !== menuName);
    } else {
      this.activeSubmenu = menuName; // 否則打開點擊的子菜單
+     // 添加到展開列表中
+     if (!this.expandedMenus.includes(menuName)) {
+       this.expandedMenus.push(menuName);
+     }
    }
+   // 保存展開狀態到 localStorage
+   localStorage.setItem('expandedMenus', JSON.stringify(this.expandedMenus));
+ }
+
+ // 檢查子選單是否展開
+ isSubmenuExpanded(menuName: string): boolean {
+   return this.expandedMenus.includes(menuName);
  }
 
  // 根據 URL 獲取頁面標題
@@ -168,6 +194,12 @@ isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
  handleAvatarError(): void {
    console.log('頭像加載失敗，顯示默認頭像');
    this.showDefaultAvatar = true;
+ }
+
+ // 處理語言變更
+ onLanguageChange(language: string): void {
+   console.log('語言已變更為:', language);
+   // 這裡可以添加語言切換的邏輯
  }
 
  // 更新用戶信息
