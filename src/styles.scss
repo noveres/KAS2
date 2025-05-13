@@ -60,7 +60,8 @@
   /* ---------- 側邊欄顏色 (淺色) ---------- */
   --sidebar-bg: #ffffff; // 白色側邊欄背景
   --sidebar-hover: #f0f7ff; // 淺灰懸停狀態
-  --sidebar-text: #4a7dff; // 深灰側邊欄文字
+  --sidebar-text: #4a7dff; // 深藍側邊欄文字
+  --sidebar-text-black: #333; // 深色側邊文字
   --sidebar-text-muted: #888888; // 中灰側邊欄次要文字
   --sidebar-border: rgba(0, 0, 0, 0.05); // 淺灰透明邊框
 }
@@ -104,6 +105,7 @@ $colors: (
   text-secondary: hsl(var(--color-text-secondary)),
   text-light: hsl(var(--color-text-light)),
   text-sidebar: var(--sidebar-text),
+  text-sidebar-black: var(--sidebar-text-black),
   text-sidebar-secondary: var(--sidebar-text-muted),
 
   // 邊框和陰影

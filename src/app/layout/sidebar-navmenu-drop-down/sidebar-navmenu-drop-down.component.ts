@@ -36,14 +36,14 @@ isPCMenuToggleEnabled = false; //使否啟用PC漢堡選單
 isMobileMenuToggleEnabled = true; //使否啟用移動端漢堡選單
 isMenuToggleOnVisible = true; //是否啟用關閉狀態的menu-toggle
 isMenuToggleOffVisible = true; //是否啟用開啟狀態的menu-toggle
-
-
+isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
 
  // 側邊欄相關
  isSidebarActive = true;
  isLoginPage = false;
  currentPage = '儀表板';
  activeSubmenu: string | null = null; // 當前活動的子菜單
+ isHovering = false; // 是否正在懸停
 
 
 
@@ -79,6 +79,12 @@ isMenuToggleOffVisible = true; //是否啟用開啟狀態的menu-toggle
  ngOnInit(): void {
    // 從 localStorage 獲取用戶信息
    this.updateUserInfo();
+
+   // 從 localStorage 獲取側邊欄狀態
+   const savedSidebarState = localStorage.getItem('sidebarActive');
+   if (savedSidebarState !== null) {
+     this.isSidebarActive = savedSidebarState === 'true';
+   }
 
    // // 訂閱頭像更新
    // this.avatarSubscription = this.avatarService.avatarUpdate$.subscribe(newAvatarUrl => {
@@ -143,6 +149,8 @@ isMenuToggleOffVisible = true; //是否啟用開啟狀態的menu-toggle
  // 切換側邊欄狀態
  toggleSidebar(): void {
    this.isSidebarActive = !this.isSidebarActive;
+   // 保存側邊欄狀態到 localStorage
+   localStorage.setItem('sidebarActive', this.isSidebarActive.toString());
  }
 
  // 切換子菜單
