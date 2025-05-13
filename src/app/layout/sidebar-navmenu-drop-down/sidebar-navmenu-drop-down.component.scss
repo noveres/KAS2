@@ -232,7 +232,10 @@
             background-color: transparent;
 
             &.active {
-              background-color: color(bg-sidebar-hover);
+              background-color: transparent;
+              color: color(text-sidebar-secondary);
+              font-weight: normal;
+              box-shadow: none;
             }
           }
 

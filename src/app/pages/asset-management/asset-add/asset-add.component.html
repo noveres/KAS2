@@ -1,1 +1,261 @@
-<p>asset-add works!</p>
+<div class="asset-add-container">
+  <div class="asset-add-header">
+    <h1>新增資產</h1>
+    <div class="header-actions">
+      <button mat-icon-button (click)="onCancel()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button mat-flat-button color="primary" (click)="onSubmit()">
+        儲存
+      </button>
+    </div>
+  </div>
+
+  <mat-tab-group class="asset-tabs">
+    <!-- 基本資料標籤頁 -->
+    <mat-tab label="基本資料">
+      <div class="tab-content">
+        <h2>資產基本資料</h2>
+        <p class="subtitle">輸入資產的基本資料，包含品號、名稱、分類等</p>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>資產編號</mat-label>
+            <input matInput placeholder="例如：A001">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>資產名稱</mat-label>
+            <input matInput placeholder="例如：Dell XPS 13 筆記型電腦">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>資產大分類</mat-label>
+            <mat-select>
+              <mat-option value="computer">電腦設備</mat-option>
+              <mat-option value="furniture">辦公家具</mat-option>
+              <mat-option value="lighting">照明設備</mat-option>
+              <mat-option value="transport">運輸設備</mat-option>
+              <mat-option value="other">其他設備</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>資產中分類</mat-label>
+            <mat-select>
+              <mat-option value="laptop">筆記型電腦</mat-option>
+              <mat-option value="desktop">桌上型電腦</mat-option>
+              <mat-option value="tablet">平板電腦</mat-option>
+              <mat-option value="monitor">顯示器</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>資產小分類</mat-label>
+            <mat-select>
+              <mat-option value="business">商務型</mat-option>
+              <mat-option value="gaming">遊戲型</mat-option>
+              <mat-option value="workstation">工作站</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>資產來源</mat-label>
+            <mat-select>
+              <mat-option value="purchase">採購</mat-option>
+              <mat-option value="donation">捐贈</mat-option>
+              <mat-option value="transfer">調撥</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>資產狀態</mat-label>
+            <mat-select>
+              <mat-option value="normal">正常使用</mat-option>
+              <mat-option value="idle">閒置</mat-option>
+              <mat-option value="repair">待修中</mat-option>
+              <mat-option value="scrapped">報廢</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>資產描述</mat-label>
+          <textarea matInput rows="4" placeholder="請輸入資產的詳細描述，例如規格、用途等"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>取得日期</mat-label>
+            <input matInput [matDatepicker]="acquisitionPicker">
+            <mat-datepicker-toggle matSuffix [for]="acquisitionPicker"></mat-datepicker-toggle>
+            <mat-datepicker #acquisitionPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>序號</mat-label>
+            <input matInput placeholder="例如：XYZ123456789">
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- 明細資料標籤頁 -->
+    <mat-tab label="明細資料">
+      <div class="tab-content">
+        <h2>資產明細資料</h2>
+        <p class="subtitle">設定資產的使用部門、位置等明細資訊</p>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>使用部門</mat-label>
+            <mat-select>
+              <mat-option value="it">資訊部</mat-option>
+              <mat-option value="hr">人力資源部</mat-option>
+              <mat-option value="finance">財務部</mat-option>
+              <mat-option value="marketing">行銷部</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>保管人</mat-label>
+            <mat-select>
+              <mat-option value="user1">張經理</mat-option>
+              <mat-option value="user2">王主管</mat-option>
+              <mat-option value="user3">李工程師</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>存放位置</mat-label>
+            <mat-select>
+              <mat-option value="office1">台北辦公室</mat-option>
+              <mat-option value="office2">新竹辦公室</mat-option>
+              <mat-option value="warehouse">中壢倉庫</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>詳細位置</mat-label>
+            <input matInput placeholder="例如：3樓會議室">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>數量</mat-label>
+            <input matInput type="number" min="1" value="1">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>附件上傳</mat-label>
+            <input matInput readonly placeholder="選擇檔案，不超過5MB的PDF或圖片">
+            <button mat-icon-button matSuffix>
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>相關文件</mat-label>
+            <input matInput readonly placeholder="選擇檔案，不超過5MB的PDF或圖片">
+            <button mat-icon-button matSuffix>
+              <mat-icon>attach_file</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>備註</mat-label>
+            <textarea matInput rows="4" placeholder="請輸入其他需要說明的事項"></textarea>
+        </mat-form-field>
+      </div>
+    </mat-tab>
+
+    <!-- 財務資料標籤頁 -->
+    <mat-tab label="財務資料">
+      <div class="tab-content">
+        <h2>資產財務資料</h2>
+        <p class="subtitle">設定資產的價值、折舊方法等相關資訊</p>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>資產價值</mat-label>
+            <input matInput type="number" placeholder="例如：30000">
+            <span matTextPrefix>NT$ &nbsp;</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>現值</mat-label>
+            <input matInput type="number" placeholder="例如：25000">
+            <span matTextPrefix>NT$ &nbsp;</span>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>使用年限</mat-label>
+            <input matInput type="number" min="1" placeholder="例如：3">
+            <span matTextSuffix>&nbsp; 年</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>折舊方法</mat-label>
+            <mat-select>
+              <mat-option value="straight">直線折舊法</mat-option>
+              <mat-option value="declining">餘額遞減法</mat-option>
+              <mat-option value="sum">年數總和法</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>折舊開始日</mat-label>
+            <input matInput [matDatepicker]="depreciationPicker">
+            <mat-datepicker-toggle matSuffix [for]="depreciationPicker"></mat-datepicker-toggle>
+            <mat-datepicker #depreciationPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>供應商</mat-label>
+            <input matInput placeholder="例如：廠商名稱">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>採購單號</mat-label>
+            <input matInput placeholder="例如：PO-20230601">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>保固開始日</mat-label>
+            <input matInput [matDatepicker]="warrantyStartPicker">
+            <mat-datepicker-toggle matSuffix [for]="warrantyStartPicker"></mat-datepicker-toggle>
+            <mat-datepicker #warrantyStartPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>保固結束日</mat-label>
+            <input matInput [matDatepicker]="warrantyEndPicker">
+            <mat-datepicker-toggle matSuffix [for]="warrantyEndPicker"></mat-datepicker-toggle>
+            <mat-datepicker #warrantyEndPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="form-actions">
+    <button mat-button (click)="onCancel()">取消</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()">儲存資產</button>
+  </div>
+</div>
