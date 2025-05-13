@@ -30,14 +30,45 @@ export const routes: Routes = [
     // canActivate: [AuthGuard]
   },
   {
+    path: 'asset-allocation',
+    loadComponent: () => import('./pages/asset-management/asset-allocation/asset-allocation.component').then(m => m.AssetAllocationComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
     path: 'asset-query',
     loadComponent: () => import('./pages/asset-management/asset-query/asset-query.component').then(m => m.AssetQueryComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'barcode-print',
+    loadComponent: () => import('./pages/asset-management/barcode-print/barcode-print.component').then(m => m.BarcodePrintComponent),
     // canActivate: [AuthGuard]
   },
   {
     path: 'asset-stamp',
     loadComponent: () => import('./pages/asset-management/asset-stamp/asset-stamp.component').then(m => m.AssetStampComponent),
     //canActivate: [AuthGuard]
+  },
+  // 盤點管理路由
+  {
+    path: 'inventory-check',
+    loadComponent: () => import('./pages/inventory-management/inventory-check/inventory-check.component').then(m => m.InventoryCheckComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory-settings',
+    loadComponent: () => import('./pages/inventory-management/inventory-settings/inventory-settings.component').then(m => m.InventorySettingsComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory-list',
+    loadComponent: () => import('./pages/inventory-management/inventory-list/inventory-list.component').then(m => m.InventoryListComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory-report',
+    loadComponent: () => import('./pages/inventory-management/inventory-report/inventory-report.component').then(m => m.InventoryReportComponent),
+    // canActivate: [AuthGuard]
   },
   // 主件維護路由
   {
