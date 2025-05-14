@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -7,11 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActionMenuComponent } from '../../../shared/components/action-menu/action-menu.component';
-import { HoverMenuComponent } from '../../../shared/components/hover-menu/hover-menu.component';
+import { ColumnConfig } from './table-config/table-config.component';
 
 interface Asset {
   id: string;
@@ -42,8 +44,9 @@ interface Asset {
     MatDialogModule,
     MatPaginatorModule,
     MatSnackBarModule,
+    MatTooltipModule,
+    DragDropModule,
     ActionMenuComponent,
-    HoverMenuComponent
   ],
   templateUrl: './asset-maintenance.component.html',
   styleUrls: ['./asset-maintenance.component.scss']
@@ -58,11 +61,51 @@ export class AssetMaintenanceComponent implements OnInit {
   // 搜尋和篩選
   searchTerm: string = '';
   selectedCategory: string = '';
+  selectedCategoryName: string = '';
   selectedStatus: string = '';
+
+  // 下拉選單狀態
+  showCategoryDropdown: boolean = false;
+  showStatusDropdown: boolean = false;
+
+  // 資產分類選項
+  assetCategories = [
+    { id: '電腦設備', name: '電腦設備' },
+    { id: '辦公設備', name: '辦公設備' },
+    { id: '辦公家具', name: '辦公家具' },
+    { id: '視聽設備', name: '視聽設備' },
+    { id: '行動裝置', name: '行動裝置' }
+  ];
+
+  // 資產狀態選項
+  assetStatuses = [
+    { id: 'normal', name: '正常使用', icon: 'fas fa-check-circle' },
+    { id: 'repair', name: '維修中', icon: 'fas fa-tools' },
+    { id: 'borrowed', name: '借出', icon: 'fas fa-hand-holding' },
+    { id: 'scrapped', name: '報廢', icon: 'fas fa-trash-alt' }
+  ];
 
   // 排序
   sortField: string = 'id';
   sortDirection: 'asc' | 'desc' = 'asc';
+
+  // 表格列配置
+  columnConfigs: ColumnConfig[] = [
+    { field: 'checkbox', header: '選擇', visible: true, order: 0 },
+    { field: 'id', header: '資產編號', visible: true, order: 1 },
+    { field: 'name', header: '資產名稱', visible: true, order: 2 },
+    { field: 'category', header: '分類', visible: true, order: 3 },
+    { field: 'location', header: '位置', visible: true, order: 4 },
+    { field: 'custodian', header: '保管人', visible: true, order: 5 },
+    { field: 'status', header: '狀態', visible: true, order: 6 },
+    { field: 'acquisitionDate', header: '取得日期', visible: true, order: 7 },
+    { field: 'modifiedDate', header: '修改日期', visible: true, order: 8 },
+    { field: 'value', header: '價值', visible: true, order: 9 },
+    { field: 'actions', header: '操作', visible: true, order: 10 }
+  ];
+
+  // 當前顯示的列
+  displayedColumns: string[] = [];
 
   // 批次處理
   showBatchBar: boolean = false;
@@ -91,7 +134,7 @@ export class AssetMaintenanceComponent implements OnInit {
     { id: 'borrowed', name: '借出' },
     { id: 'scrapped', name: '報廢' }
   ];
-  
+
   // 分類選單項目
   categoryMenuItems = [
     { icon: 'fas fa-list', label: '顯示全部分類', action: '' },
@@ -101,7 +144,7 @@ export class AssetMaintenanceComponent implements OnInit {
     { icon: 'fas fa-tv', label: '視聽設備', action: '視聽設備' },
     { icon: 'fas fa-tablet-alt', label: '行動裝置', action: '行動裝置' }
   ];
-  
+
   // 狀態選單項目
   statusMenuItems = [
     { icon: 'fas fa-list', label: '顯示全部狀態', action: '' },
@@ -111,12 +154,112 @@ export class AssetMaintenanceComponent implements OnInit {
     { icon: 'fas fa-trash-alt', label: '報廢', action: 'scrapped' }
   ];
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     // 生成假資料
     this.generateMockData();
     this.totalItems = this.assets.length;
+
+    // 從 localStorage 讀取用戶表格配置
+    this.loadTableConfig();
+
+    // 更新顯示的列
+    this.updateDisplayedColumns();
+  }
+
+  // 從 localStorage 讀取表格配置
+  loadTableConfig(): void {
+    const savedConfig = localStorage.getItem('assetTableConfig');
+    if (savedConfig) {
+      try {
+        this.columnConfigs = JSON.parse(savedConfig);
+      } catch (e) {
+        console.error('解析表格配置失敗', e);
+      }
+    }
+  }
+
+  // 保存表格配置到 localStorage
+  saveTableConfig(): void {
+    localStorage.setItem('assetTableConfig', JSON.stringify(this.columnConfigs));
+  }
+
+  // 更新顯示的列
+  updateDisplayedColumns(): void {
+    this.displayedColumns = this.columnConfigs
+      .filter(col => col.visible)
+      .sort((a, b) => a.order - b.order)
+      .map(col => col.field);
+  }
+
+  // 列配置選單相關
+  showColumnMenu: boolean = false;
+
+  // 切換列配置選單顯示/隱藏
+  toggleColumnMenu(): void {
+    this.showColumnMenu = !this.showColumnMenu;
+  }
+
+  // 關閉列配置選單
+  closeColumnMenu(): void {
+    this.showColumnMenu = false;
+  }
+
+  // 處理拖拽事件
+  dropColumn(event: CdkDragDrop<ColumnConfig[]>): void {
+    moveItemInArray(this.columnConfigs, event.previousIndex, event.currentIndex);
+    // 更新順序
+    this.columnConfigs.forEach((column, index) => {
+      column.order = index;
+    });
+    this.saveAndUpdateColumns();
+  }
+
+  // 檢查是否全部列都被選中
+  isAllColumnsSelected(): boolean {
+    return this.columnConfigs.every(column => column.visible);
+  }
+
+  // 檢查是否部分列被選中
+  isPartiallyColumnsSelected(): boolean {
+    return this.columnConfigs.some(column => column.visible) && !this.isAllColumnsSelected();
+  }
+
+  // 切換全部列的選中狀態
+  toggleAllColumns(checked: boolean): void {
+    this.columnConfigs.forEach(column => {
+      column.visible = checked;
+    });
+    this.saveAndUpdateColumns();
+  }
+
+  // 保存並更新列
+  saveAndUpdateColumns(): void {
+    this.saveTableConfig();
+    this.updateDisplayedColumns();
+  }
+
+  // 監聽全局點擊事件，用於關閉選單
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // 關閉列配置選單
+    const configMenuContainer = document.querySelector('.config-menu-container');
+    if (this.showColumnMenu && configMenuContainer && !configMenuContainer.contains(event.target as Node)) {
+      this.closeColumnMenu();
+    }
+    
+    // 關閉分類下拉選單
+    const categoryDropdown = document.querySelector('.custom-dropdown:nth-child(1)');
+    if (this.showCategoryDropdown && categoryDropdown && !event.composedPath().includes(categoryDropdown as EventTarget)) {
+      this.showCategoryDropdown = false;
+    }
+    
+    // 關閉狀態下拉選單
+    const statusDropdown = document.querySelector('.custom-dropdown:nth-child(2)');
+    if (this.showStatusDropdown && statusDropdown && !event.composedPath().includes(statusDropdown as EventTarget)) {
+      this.showStatusDropdown = false;
+    }
   }
 
   // 生成假資料
@@ -594,10 +737,7 @@ export class AssetMaintenanceComponent implements OnInit {
     }
   }
 
-  // 獲取狀態名稱
-  getStatusName(statusId: string): string {
-    return this.statuses.find(s => s.id === statusId)?.name || '';
-  }
+
 
   // 獲取狀態樣式類
   getStatusClass(status: string): string {
@@ -641,31 +781,82 @@ export class AssetMaintenanceComponent implements OnInit {
     }
   }
 
-  // 導出資料
+  // 導出資產數據
   exportData(): void {
-    this.snackBar.open('資產資料匯出功能開發中', '關閉', {
-      duration: 3000
-    });
+    this.snackBar.open('正在匯出資產數據...', '關閉', { duration: 2000 });
+    // 實際導出邏輯會在這裡實現
+  }
+
+  // 新增資產
+  addNewAsset(): void {
+    this.snackBar.open('正在前往新增資產頁面...', '關閉', { duration: 2000 });
+    // 實際導向新增資產頁面的邏輯會在這裡實現
+    // 可以使用 Router 導向新增資產頁面
   }
 
   // 處理分類篩選
   handleCategoryFilter(category: string): void {
     this.selectedCategory = category;
+    this.selectedCategoryName = category ? this.assetCategories.find(c => c.id === category)?.name || '' : '';
+    this.showCategoryDropdown = false;
     this.updatePaginatedAssets();
-    
+
     const categoryName = category === '' ? '全部分類' : category;
     this.snackBar.open(`已篩選為 ${categoryName}`, '關閉', { duration: 2000 });
   }
-  
+
   // 處理狀態篩選
   handleStatusFilter(status: string): void {
     this.selectedStatus = status;
+    this.showStatusDropdown = false;
     this.updatePaginatedAssets();
-    
+
     const statusName = this.getStatusName(status) || '全部狀態';
     this.snackBar.open(`已篩選為 ${statusName}`, '關閉', { duration: 2000 });
   }
   
+  // 重置所有篩選條件
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.selectedCategoryName = '';
+    this.selectedStatus = '';
+    this.updatePaginatedAssets();
+    
+    this.snackBar.open('已重置所有篩選條件', '關閉', { duration: 2000 });
+  }
+
+  // 切換分類下拉選單顯示狀態
+  toggleCategoryDropdown(): void {
+    this.showCategoryDropdown = !this.showCategoryDropdown;
+    this.showStatusDropdown = false; // 關閉另一個下拉選單
+  }
+
+  // 切換狀態下拉選單顯示狀態
+  toggleStatusDropdown(): void {
+    this.showStatusDropdown = !this.showStatusDropdown;
+    this.showCategoryDropdown = false; // 關閉另一個下拉選單
+  }
+
+  // 獲取分類對應的圖標
+  getCategoryIcon(categoryId: string): string {
+    const iconMap: {[key: string]: string} = {
+      '電腦設備': 'fas fa-laptop',
+      '辦公設備': 'fas fa-print',
+      '辦公家具': 'fas fa-chair',
+      '視聽設備': 'fas fa-tv',
+      '行動裝置': 'fas fa-tablet-alt'
+    };
+    return iconMap[categoryId] || 'fas fa-box';
+  }
+
+  // 獲取狀態名稱
+  getStatusName(statusId: string): string {
+    if (!statusId) return '';
+    const status = this.assetStatuses.find(s => s.id === statusId);
+    return status ? status.name : '';
+  }
+
   // 處理資產操作選單的動作
   handleAssetAction(action: string, asset: Asset): void {
     switch(action) {

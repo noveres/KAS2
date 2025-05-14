@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>自定義表格顯示</h2>
+
+<div mat-dialog-content>
+  <div class="select-all-row">
+    <mat-checkbox 
+      [checked]="isAllSelected()" 
+      [indeterminate]="isPartiallySelected()"
+      (change)="toggleAll($event.checked)">
+      全部選擇
+    </mat-checkbox>
+  </div>
+  
+  <div cdkDropList class="column-list" (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let column of columns" cdkDrag class="column-item">
+      <div class="column-item-content">
+        <mat-checkbox [(ngModel)]="column.visible">
+          {{ column.header }}
+        </mat-checkbox>
+        <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">取消</button>
+  <button mat-button color="primary" (click)="onSave()">保存</button>
+</div>

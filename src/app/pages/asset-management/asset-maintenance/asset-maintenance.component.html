@@ -17,55 +17,79 @@
     <app-action-menu #sortMenuRef ...></app-action-menu>
     -->
     <div class="asset-list-toolbar">
-      <div class="search-section">
-        <input type="text" class="search-input" placeholder="搜尋資產編號、名稱或保管人…" [(ngModel)]="searchTerm">
-
-        <button type="button" class="toolbar-btn sort-btn" (click)="sortMenuRef.toggleMenu($event)">
-          <span class="icon-updown"></span>排序
-        </button>
-        <app-action-menu #sortMenuRef
-          [menuItems]="[
-            { icon: 'fas fa-sort-alpha-down', label: '依編號排序', action: 'sort-id' },
-            { icon: 'fas fa-font', label: '依名稱排序', action: 'sort-name' },
-            { icon: 'fas fa-calendar-alt', label: '依取得日期排序', action: 'sort-date' },
-            { icon: 'fas fa-dollar-sign', label: '依價值排序', action: 'sort-value' }
-          ]"
-          [hideDefaultButton]="true"
-          (menuItemClicked)="handleSortAction($event)"
-        ></app-action-menu>
-
-        <button type="button" class="toolbar-btn export-btn" (click)="exportData()">
-          <span class="icon-download"></span>匯出
-        </button>
+      <!-- 左側搜尋區域 -->
+      <div class="toolbar-left">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="搜尋資產編號、名稱或保管人…" [(ngModel)]="searchTerm">
+        </div>
       </div>
 
-      <div class="filter-section">
-        <app-hover-menu
-          [buttonText]="'資產分類'"
-          [buttonIcon]="'icon-filter'"
-          [menuItems]="[
-            { icon: 'fas fa-list', label: '顯示全部分類', action: '' },
-            { icon: 'fas fa-laptop', label: '電腦設備', action: '電腦設備' },
-            { icon: 'fas fa-print', label: '辦公設備', action: '辦公設備' },
-            { icon: 'fas fa-chair', label: '辦公家具', action: '辦公家具' },
-            { icon: 'fas fa-tv', label: '視聽設備', action: '視聽設備' },
-            { icon: 'fas fa-tablet-alt', label: '行動裝置', action: '行動裝置' }
-          ]"
-          (menuItemClicked)="handleCategoryFilter($event)"
-        ></app-hover-menu>
+      <!-- 右側功能區域 -->
+      <div class="toolbar-right">
+        <!-- 篩選區域 -->
+        <div class="filter-group">
+          <!-- 資產分類下拉選單 -->
+          <div class="custom-dropdown">
+            <button class="dropdown-toggle" (click)="toggleCategoryDropdown()">
+              <i class="fas fa-tags"></i>
+              <span>{{ selectedCategoryName || '資產分類' }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" [class.show]="showCategoryDropdown">
+              <div class="dropdown-item" (click)="handleCategoryFilter('')">
+                <i class="fas fa-list"></i>
+                <span>顯示全部分類</span>
+              </div>
+              <div class="dropdown-item" *ngFor="let category of assetCategories"
+                   (click)="handleCategoryFilter(category.id)">
+                <i [class]="getCategoryIcon(category.id)"></i>
+                <span>{{ category.name }}</span>
+              </div>
+            </div>
+          </div>
 
-        <app-hover-menu
-          [buttonText]="'資產狀態'"
-          [buttonIcon]="'icon-filter'"
-          [menuItems]="[
-            { icon: 'fas fa-list', label: '顯示全部狀態', action: '' },
-            { icon: 'fas fa-check-circle', label: '正常使用', action: 'normal' },
-            { icon: 'fas fa-tools', label: '維修中', action: 'repair' },
-            { icon: 'fas fa-hand-holding', label: '借出', action: 'borrowed' },
-            { icon: 'fas fa-trash-alt', label: '報廢', action: 'scrapped' }
-          ]"
-          (menuItemClicked)="handleStatusFilter($event)"
-        ></app-hover-menu>
+          <!-- 資產狀態下拉選單 -->
+          <div class="custom-dropdown">
+            <button class="dropdown-toggle" (click)="toggleStatusDropdown()">
+              <i class="fas fa-info-circle"></i>
+              <span>{{ getStatusName(selectedStatus) || '資產狀態' }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" [class.show]="showStatusDropdown">
+              <div class="dropdown-item" (click)="handleStatusFilter('')">
+                <i class="fas fa-list"></i>
+                <span>顯示全部狀態</span>
+              </div>
+              <div class="dropdown-item" *ngFor="let status of assetStatuses"
+                   (click)="handleStatusFilter(status.id)">
+                <i [class]="status.icon"></i>
+                <span>{{ status.name }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 重置篩選按鈕 -->
+          <button type="button" class="toolbar-btn reset-btn" (click)="resetFilters()"
+                  [class.disabled]="!selectedCategory && !selectedStatus && !searchTerm"
+                  [disabled]="!selectedCategory && !selectedStatus && !searchTerm">
+            <i class="fas fa-undo-alt"></i>
+            <span>重置篩選</span>
+          </button>
+        </div>
+
+        <!-- 操作區域 -->
+        <div class="action-group">
+          <button type="button" class="toolbar-btn export-btn" (click)="exportData()">
+            <i class="fas fa-file-export"></i>
+            <span>匯出</span>
+          </button>
+
+          <button type="button" class="toolbar-btn add-btn" (click)="addNewAsset()">
+            <i class="fas fa-plus"></i>
+            <span>新增資產</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -73,17 +97,8 @@
     <div class="batch-bar" *ngIf="showBatchBar">
       <span>已選擇 {{selectedAssetsCount}} 個資產</span>
 
-      <button class="batch-btn" (click)="statusMenuRef.toggleMenu($event)">批次更新狀態</button>
-      <app-action-menu #statusMenuRef
-        [menuItems]="[
-          { icon: 'fas fa-check-circle', label: '正常使用', action: 'normal' },
-          { icon: 'fas fa-tools', label: '維修中', action: 'repair' },
-          { icon: 'fas fa-hand-holding', label: '借出', action: 'borrowed' },
-          { icon: 'fas fa-trash-alt', label: '報廢', action: 'scrapped', isDanger: true }
-        ]"
-        (menuItemClicked)="batchUpdateStatus($event)"
-      ></app-action-menu>
 
+      <button class="batch-btn">批次更新狀態</button>
       <button class="batch-btn">批次更新位置</button>
       <button class="batch-btn">批次更新保管人</button>
       <button class="batch-btn">批次列印條碼</button>
@@ -94,87 +109,133 @@
 
     <!-- 資產表格 -->
     <div class="asset-table-wrap">
+      <div class="table-actions">
+        <div class="config-menu-container">
+          <button mat-icon-button (click)="toggleColumnMenu()" matTooltip="自定義表格顯示">
+            <i class="fas fa-cog"></i>
+          </button>
+
+          <!-- 列配置選單 -->
+          <div class="column-config-menu" [class.show]="showColumnMenu">
+            <div class="menu-header">
+              <h3>自定義表格顯示</h3>
+              <div class="select-all-row">
+                <mat-checkbox
+                  [checked]="isAllColumnsSelected()"
+                  [indeterminate]="isPartiallyColumnsSelected()"
+                  (change)="toggleAllColumns($event.checked)">
+                  全部選擇
+                </mat-checkbox>
+              </div>
+            </div>
+
+            <div cdkDropList class="column-list" (cdkDropListDropped)="dropColumn($event)">
+              <div *ngFor="let column of columnConfigs" cdkDrag class="column-item">
+                <div class="column-item-content">
+                  <mat-checkbox [(ngModel)]="column.visible" (change)="saveAndUpdateColumns()">
+                    {{ column.header }}
+                  </mat-checkbox>
+                  <i cdkDragHandle class="fas fa-grip-lines drag-handle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <table class="asset-table">
         <thead>
           <tr>
-            <th>
-              <mat-checkbox [checked]="allChecked" [indeterminate]="getPageSelectedCount() > 0 && getPageSelectedCount() < paginatedAssets.length" (change)="toggleSelectAll()"></mat-checkbox>
-            </th>
-            <th (click)="toggleSort('id')" class="sortable-header">
-              資產編號
-              <i *ngIf="sortField === 'id'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('name')" class="sortable-header">
-              資產名稱
-              <i *ngIf="sortField === 'name'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('category')" class="sortable-header">
-              分類
-              <i *ngIf="sortField === 'category'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('location')" class="sortable-header">
-              位置
-              <i *ngIf="sortField === 'location'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('custodian')" class="sortable-header">
-              保管人
-              <i *ngIf="sortField === 'custodian'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('status')" class="sortable-header">
-              狀態
-              <i *ngIf="sortField === 'status'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('acquisitionDate')" class="sortable-header">
-              取得日期
-              <i *ngIf="sortField === 'acquisitionDate'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('modifiedDate')" class="sortable-header">
-              修改日期
-              <i *ngIf="sortField === 'modifiedDate'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th (click)="toggleSort('value')" class="sortable-header">
-              價值
-              <i *ngIf="sortField === 'value'" class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
-            </th>
-            <th>操作</th>
+            <!-- 動態生成表頭 -->
+            <ng-container *ngFor="let column of columnConfigs">
+              <ng-container *ngIf="column.visible">
+                <!-- 選擇框列 -->
+                <th *ngIf="column.field === 'checkbox'">
+                  <mat-checkbox
+                    [checked]="allChecked"
+                    [indeterminate]="getPageSelectedCount() > 0 && getPageSelectedCount() < paginatedAssets.length"
+                    (change)="toggleSelectAll()"></mat-checkbox>
+                </th>
+
+                <!-- 可排序列 -->
+                <th *ngIf="column.field !== 'checkbox' && column.field !== 'actions'"
+                    (click)="toggleSort(column.field)"
+                    class="sortable-header">
+                  {{ column.header }}
+                  <i *ngIf="sortField === column.field" class="fas"
+                     [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
+                </th>
+
+                <!-- 操作列 -->
+                <th *ngIf="column.field === 'actions'">
+                  {{ column.header }}
+                </th>
+              </ng-container>
+            </ng-container>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let asset of paginatedAssets">
-            <td>
-              <mat-checkbox [checked]="asset.checked" (change)="toggleAssetSelection(asset)"></mat-checkbox>
-            </td>
-            <td>{{asset.id}}</td>
-            <td>{{asset.name}}</td>
-            <td>{{asset.category}}</td>
-            <td>{{asset.location}}</td>
-            <td>{{asset.custodian}}</td>
-            <td>
-              <span class="status-badge" [ngClass]="getStatusClass(asset.status)">
-                {{getStatusName(asset.status)}}
-              </span>
-            </td>
-            <td>{{asset.acquisitionDate}}</td>
-            <td>{{asset.modifiedDate}}</td>
-            <td>{{asset.value | number}}</td>
-            <td>
-              <app-action-menu
-                [menuItems]="[
-                  { icon: 'fas fa-eye', label: '查看詳情', action: 'view' },
-                  { icon: 'fas fa-edit', label: '編輯資產', action: 'edit' },
-                  { icon: 'fas fa-history', label: '操作歷史', action: 'history' },
-                  { icon: 'fas fa-print', label: '列印條碼', action: 'print' },
-                  { isSeparator: true },
-                  { icon: 'fas fa-trash', label: '刪除資產', action: 'delete', isDanger: true }
-                ]"
-                (menuItemClicked)="handleAssetAction($event, asset)"
-              ></app-action-menu>
-            </td>
+            <!-- 動態生成單元格 -->
+            <ng-container *ngFor="let column of columnConfigs">
+              <ng-container *ngIf="column.visible">
+                <!-- 選擇框列 -->
+                <td *ngIf="column.field === 'checkbox'">
+                  <mat-checkbox [checked]="asset.checked" (change)="toggleAssetSelection(asset)"></mat-checkbox>
+                </td>
+
+                <!-- ID列 -->
+                <td *ngIf="column.field === 'id'">{{asset.id}}</td>
+
+                <!-- 名稱列 -->
+                <td *ngIf="column.field === 'name'">{{asset.name}}</td>
+
+                <!-- 分類列 -->
+                <td *ngIf="column.field === 'category'">{{asset.category}}</td>
+
+                <!-- 位置列 -->
+                <td *ngIf="column.field === 'location'">{{asset.location}}</td>
+
+                <!-- 保管人列 -->
+                <td *ngIf="column.field === 'custodian'">{{asset.custodian}}</td>
+
+                <!-- 狀態列 -->
+                <td *ngIf="column.field === 'status'">
+                  <span class="status-badge" [ngClass]="getStatusClass(asset.status)">
+                    {{getStatusName(asset.status)}}
+                  </span>
+                </td>
+
+                <!-- 取得日期列 -->
+                <td *ngIf="column.field === 'acquisitionDate'">{{asset.acquisitionDate}}</td>
+
+                <!-- 修改日期列 -->
+                <td *ngIf="column.field === 'modifiedDate'">{{asset.modifiedDate}}</td>
+
+                <!-- 價值列 -->
+                <td *ngIf="column.field === 'value'">{{asset.value | number}}</td>
+
+                <!-- 操作列 -->
+                <td *ngIf="column.field === 'actions'">
+                  <app-action-menu
+                    [menuItems]="[
+                      { icon: 'fas fa-eye', label: '查看詳情', action: 'view' },
+                      { icon: 'fas fa-edit', label: '編輯資產', action: 'edit' },
+                      { icon: 'fas fa-history', label: '操作歷史', action: 'history' },
+                      { icon: 'fas fa-print', label: '列印條碼', action: 'print' },
+                      { isSeparator: true },
+                      { icon: 'fas fa-trash', label: '刪除資產', action: 'delete', isDanger: true }
+                    ]"
+                    (menuItemClicked)="handleAssetAction($event, asset)"
+                  ></app-action-menu>
+                </td>
+              </ng-container>
+            </ng-container>
           </tr>
 
           <!-- 無資料時顯示 -->
           <tr *ngIf="paginatedAssets.length === 0">
-            <td colspan="10" class="no-data-message">
+            <td [attr.colspan]="displayedColumns.length" class="no-data-message">
               <div>
                 <mat-icon>search_off</mat-icon>
                 <p>沒有符合條件的資產</p>
