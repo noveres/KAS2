@@ -20,6 +20,7 @@ interface Asset {
   custodian: string;
   status: 'normal' | 'repair' | 'borrowed' | 'scrapped';
   acquisitionDate: string;
+  modifiedDate: string; // 修改日期
   value: number;
   checked?: boolean;
 }
@@ -48,24 +49,24 @@ interface Asset {
 export class AssetMaintenanceComponent implements OnInit {
   // 用於模板中使用Math函數
   Math = Math;
-  
+
   // 資產列表
   assets: Asset[] = [];
-  
+
   // 搜尋和篩選
   searchTerm: string = '';
   selectedCategory: string = '';
   selectedStatus: string = '';
-  
+
   // 批次處理
   showBatchBar: boolean = false;
   allChecked: boolean = false;
-  
+
   // 分頁
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalItems: number = 0;
-  
+
   // 分類選項
   categories = [
     { id: '', name: '所有分類' },
@@ -75,7 +76,7 @@ export class AssetMaintenanceComponent implements OnInit {
     { id: 'audio', name: '視聽設備' },
     { id: 'mobile', name: '行動裝置' }
   ];
-  
+
   // 狀態選項
   statuses = [
     { id: '', name: '所有狀態' },
@@ -84,18 +85,19 @@ export class AssetMaintenanceComponent implements OnInit {
     { id: 'borrowed', name: '借出' },
     { id: 'scrapped', name: '報廢' }
   ];
-  
+
   constructor(private snackBar: MatSnackBar) {}
-  
+
   ngOnInit(): void {
     // 生成假資料
     this.generateMockData();
     this.totalItems = this.assets.length;
   }
-  
+
   // 生成假資料
   generateMockData(): void {
-    const mockAssets: Asset[] = [
+    // 創建基本資產數據
+    let mockAssets: Asset[] = [
       {
         id: 'A001',
         name: 'Dell XPS 13 筆記型電腦',
@@ -104,6 +106,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '王小明',
         status: 'normal',
         acquisitionDate: '2023-01-15',
+        modifiedDate: '2025-05-01',
         value: 35000
       },
       {
@@ -111,9 +114,10 @@ export class AssetMaintenanceComponent implements OnInit {
         name: 'HP LaserJet Pro 印表機',
         category: '辦公設備',
         location: '台北總部－行政部',
-        custodian: '李小華',
+        custodian: '李小芳',
         status: 'repair',
-        acquisitionDate: '2022-08-20',
+        acquisitionDate: '2022-11-20',
+        modifiedDate: '2025-04-22',
         value: 12000
       },
       {
@@ -124,6 +128,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '會議室管理員',
         status: 'normal',
         acquisitionDate: '2023-03-10',
+        modifiedDate: '2025-04-22',
         value: 28000
       },
       {
@@ -134,6 +139,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '張小龍',
         status: 'borrowed',
         acquisitionDate: '2022-11-05',
+        modifiedDate: '2025-04-22',
         value: 25000
       },
       {
@@ -144,6 +150,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '陳總經理',
         status: 'normal',
         acquisitionDate: '2023-02-28',
+        modifiedDate: '2025-04-22',
         value: 18000
       },
       {
@@ -154,6 +161,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '林小美',
         status: 'normal',
         acquisitionDate: '2023-04-15',
+        modifiedDate: '2025-04-22',
         value: 32000
       },
       {
@@ -164,6 +172,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '會議室管理員',
         status: 'scrapped',
         acquisitionDate: '2020-06-10',
+        modifiedDate: '2025-04-22',
         value: 22000
       },
       {
@@ -174,6 +183,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '黃小玲',
         status: 'normal',
         acquisitionDate: '2023-05-20',
+        modifiedDate: '2025-04-22',
         value: 42000
       },
       {
@@ -184,6 +194,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '吳小倩',
         status: 'borrowed',
         acquisitionDate: '2023-01-30',
+        modifiedDate: '2025-04-22',
         value: 95000
       },
       {
@@ -194,6 +205,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '趙小強',
         status: 'normal',
         acquisitionDate: '2022-12-15',
+        modifiedDate: '2025-04-22',
         value: 28000
       },
       {
@@ -204,6 +216,7 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '公共區域',
         status: 'normal',
         acquisitionDate: '2022-09-05',
+        modifiedDate: '2025-04-22',
         value: 5000
       },
       {
@@ -214,48 +227,69 @@ export class AssetMaintenanceComponent implements OnInit {
         custodian: '公共設備',
         status: 'repair',
         acquisitionDate: '2021-11-20',
+        modifiedDate: '2025-04-22',
         value: 15000
       }
     ];
-    
+
+    // 為所有資產添加修改日期字段（如果沒有的話）
+    mockAssets = mockAssets.map(asset => {
+      if (!asset.modifiedDate) {
+        // 生成隨機的修改日期，在取得日期之後
+        const acqDate = new Date(asset.acquisitionDate);
+        const modDate = new Date(acqDate);
+        modDate.setDate(modDate.getDate() + Math.floor(Math.random() * 365 * 2)); // 最多後移兩年
+
+        // 確保修改日期不超過今天
+        const today = new Date();
+        const finalModDate = modDate > today ? today : modDate;
+
+        return {
+          ...asset,
+          modifiedDate: finalModDate.toISOString().split('T')[0] // 格式化為 YYYY-MM-DD
+        };
+      }
+      return asset;
+    });
+
     // 添加checked屬性
     this.assets = mockAssets.map(asset => ({ ...asset, checked: false }));
   }
-  
+
   // 搜尋資產
   searchAssets(): Asset[] {
     return this.assets.filter(asset => {
       // 搜尋條件
-      const matchesSearch = this.searchTerm ? 
+      const matchesSearch = this.searchTerm ?
         (asset.id.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
          asset.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
          asset.custodian.toLowerCase().includes(this.searchTerm.toLowerCase())) : true;
-      
+
       // 分類篩選
-      const matchesCategory = this.selectedCategory ? 
+      const matchesCategory = this.selectedCategory ?
         asset.category === this.categories.find(c => c.id === this.selectedCategory)?.name : true;
-      
+
       // 狀態篩選
-      const matchesStatus = this.selectedStatus ? 
+      const matchesStatus = this.selectedStatus ?
         asset.status === this.selectedStatus : true;
-      
+
       return matchesSearch && matchesCategory && matchesStatus;
     });
   }
-  
+
   // 取得當前頁面的資產
   get paginatedAssets(): Asset[] {
     const filteredAssets = this.searchAssets();
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return filteredAssets.slice(startIndex, startIndex + this.itemsPerPage);
   }
-  
+
   // 更新分頁資產列表
   updatePaginatedAssets(): void {
     // 重新計算分頁
     const filteredAssets = this.searchAssets();
     const maxPage = Math.ceil(filteredAssets.length / this.itemsPerPage);
-    
+
     // 確保當前頁不超過最大頁數
     if (this.currentPage > maxPage && maxPage > 0) {
       this.currentPage = maxPage;
@@ -263,12 +297,12 @@ export class AssetMaintenanceComponent implements OnInit {
       this.currentPage = 1;
     }
   }
-  
+
   // 取得選中的資產數量（所有資產）
   get selectedAssetsCount(): number {
     return this.assets.filter(asset => asset.checked).length;
   }
-  
+
   // 取得篩選後被選中的資產數量
   getFilteredSelectedCount(): number {
     const filteredAssets = this.searchAssets();
@@ -278,15 +312,15 @@ export class AssetMaintenanceComponent implements OnInit {
       return originalAsset?.checked === true;
     }).length;
   }
-  
+
   // 全選/取消全選（僅選擇當前篩選的資產）
   toggleSelectAll(): void {
     // 取得當前篩選後的資產
     const filteredAssets = this.searchAssets();
-    
+
     // 判斷是否全選
     this.allChecked = !this.allChecked;
-    
+
     // 只更新篩選後資產的選擇狀態
     this.assets.forEach(asset => {
       // 檢查資產是否在篩選結果中
@@ -294,39 +328,39 @@ export class AssetMaintenanceComponent implements OnInit {
         asset.checked = this.allChecked;
       }
     });
-    
+
     this.updateBatchBarVisibility();
   }
-  
+
   // 選擇單個資產
   toggleAssetSelection(asset: Asset): void {
     asset.checked = !asset.checked;
-    
+
     // 取得當前篩選後的資產
     const filteredAssets = this.searchAssets();
-    
+
     // 檢查篩選後的資產是否全部被選中
     this.allChecked = filteredAssets.length > 0 && filteredAssets.every(a => {
       // 在原始資產數組中找到對應的資產並檢查其選擇狀態
       const originalAsset = this.assets.find(original => original.id === a.id);
       return originalAsset?.checked === true;
     });
-    
+
     this.updateBatchBarVisibility();
   }
-  
+
   // 更新批次處理列的可見性
   updateBatchBarVisibility(): void {
     this.showBatchBar = this.selectedAssetsCount > 0;
   }
-  
+
   // 取消所有選擇
   cancelSelection(): void {
     this.assets.forEach(asset => asset.checked = false);
     this.allChecked = false;
     this.showBatchBar = false;
   }
-  
+
   // 批次更新狀態
   batchUpdateStatus(status: string): void {
     const selectedAssets = this.assets.filter(asset => asset.checked);
@@ -336,7 +370,7 @@ export class AssetMaintenanceComponent implements OnInit {
     alert(`已將 ${selectedAssets.length} 個資產狀態更新為 ${this.getStatusName(status)}`);
     this.cancelSelection();
   }
-  
+
   // 批次刪除
   batchDelete(): void {
     if (confirm('確定要刪除選中的資產嗎？此操作無法復原。')) {
@@ -347,12 +381,12 @@ export class AssetMaintenanceComponent implements OnInit {
       this.cancelSelection();
     }
   }
-  
+
   // 獲取狀態名稱
   getStatusName(statusId: string): string {
     return this.statuses.find(s => s.id === statusId)?.name || '';
   }
-  
+
   // 獲取狀態樣式類
   getStatusClass(status: string): string {
     switch(status) {
@@ -363,14 +397,14 @@ export class AssetMaintenanceComponent implements OnInit {
       default: return '';
     }
   }
-  
+
   // 分頁 - 上一頁
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
   }
-  
+
   // 分頁 - 下一頁
   nextPage(): void {
     const totalPages = Math.ceil(this.searchAssets().length / this.itemsPerPage);
@@ -378,7 +412,7 @@ export class AssetMaintenanceComponent implements OnInit {
       this.currentPage++;
     }
   }
-  
+
   // 處理排序操作
   handleSortAction(action: string): void {
     switch(action) {
@@ -402,14 +436,14 @@ export class AssetMaintenanceComponent implements OnInit {
         break;
     }
   }
-  
+
   // 導出資料
   exportData(): void {
     this.snackBar.open('資產資料匯出功能開發中', '關閉', {
       duration: 3000
     });
   }
-  
+
   // 處理資產操作選單的動作
   handleAssetAction(action: string, asset: Asset): void {
     switch(action) {
