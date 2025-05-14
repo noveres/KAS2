@@ -312,23 +312,32 @@ export class AssetMaintenanceComponent implements OnInit {
       return originalAsset?.checked === true;
     }).length;
   }
+  
+  // 取得當前頁面被選中的資產數量
+  getPageSelectedCount(): number {
+    return this.paginatedAssets.filter(asset => {
+      // 在原始資產數組中找到對應的資產並檢查其選擇狀態
+      const originalAsset = this.assets.find(original => original.id === asset.id);
+      return originalAsset?.checked === true;
+    }).length;
+  }
 
-  // 全選/取消全選（僅選擇當前篩選的資產）
+  // 全選/取消全選（僅選擇當前頁面的資產）
   toggleSelectAll(): void {
-    // 取得當前篩選後的資產
-    const filteredAssets = this.searchAssets();
-
     // 判斷是否全選
     this.allChecked = !this.allChecked;
-
-    // 只更新篩選後資產的選擇狀態
+    
+    // 取得當前頁面的資產
+    const currentPageAssets = this.paginatedAssets;
+    
+    // 只更新當前頁面資產的選擇狀態
     this.assets.forEach(asset => {
-      // 檢查資產是否在篩選結果中
-      if (filteredAssets.some(filteredAsset => filteredAsset.id === asset.id)) {
+      // 檢查資產是否在當前頁面中
+      if (currentPageAssets.some(pageAsset => pageAsset.id === asset.id)) {
         asset.checked = this.allChecked;
       }
     });
-
+    
     this.updateBatchBarVisibility();
   }
 
@@ -336,11 +345,11 @@ export class AssetMaintenanceComponent implements OnInit {
   toggleAssetSelection(asset: Asset): void {
     asset.checked = !asset.checked;
 
-    // 取得當前篩選後的資產
-    const filteredAssets = this.searchAssets();
+    // 取得當前頁面的資產
+    const currentPageAssets = this.paginatedAssets;
 
-    // 檢查篩選後的資產是否全部被選中
-    this.allChecked = filteredAssets.length > 0 && filteredAssets.every(a => {
+    // 檢查當前頁面的資產是否全部被選中
+    this.allChecked = currentPageAssets.length > 0 && currentPageAssets.every(a => {
       // 在原始資產數組中找到對應的資產並檢查其選擇狀態
       const originalAsset = this.assets.find(original => original.id === a.id);
       return originalAsset?.checked === true;
@@ -398,19 +407,11 @@ export class AssetMaintenanceComponent implements OnInit {
     }
   }
 
-  // 分頁 - 上一頁
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  // 分頁 - 下一頁
-  nextPage(): void {
-    const totalPages = Math.ceil(this.searchAssets().length / this.itemsPerPage);
-    if (this.currentPage < totalPages) {
-      this.currentPage++;
-    }
+  // 處理分頁器事件
+  handlePageEvent(event: any): void {
+    this.currentPage = event.pageIndex + 1;
+    this.itemsPerPage = event.pageSize;
+    this.updatePaginatedAssets();
   }
 
   // 處理排序操作

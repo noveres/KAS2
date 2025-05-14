@@ -80,7 +80,7 @@
         <thead>
           <tr>
             <th>
-              <mat-checkbox [checked]="allChecked" [indeterminate]="getFilteredSelectedCount() > 0 && getFilteredSelectedCount() < searchAssets().length" (change)="toggleSelectAll()"></mat-checkbox>
+              <mat-checkbox [checked]="allChecked" [indeterminate]="getPageSelectedCount() > 0 && getPageSelectedCount() < paginatedAssets.length" (change)="toggleSelectAll()"></mat-checkbox>
             </th>
             <th>資產編號</th>
             <th>資產名稱</th>
@@ -142,9 +142,15 @@
 
     <!-- 分頁器 -->
     <div class="table-pagination">
-      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">上一頁</button>
-      <span class="page-info">第 {{currentPage}} 頁 / 共 {{Math.ceil(searchAssets().length / itemsPerPage)}} 頁</span>
-      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage >= Math.ceil(searchAssets().length / itemsPerPage)">下一頁</button>
+      <mat-paginator 
+        [length]="searchAssets().length"
+        [pageSize]="itemsPerPage"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        [showFirstLastButtons]="true"
+        [pageIndex]="currentPage - 1"
+        (page)="handlePageEvent($event)"
+        aria-label="選擇頁面">
+      </mat-paginator>
     </div>
   </div>
 </div>
