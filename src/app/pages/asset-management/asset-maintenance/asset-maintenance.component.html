@@ -98,11 +98,11 @@
       <span>已選擇 {{selectedAssetsCount}} 個資產</span>
 
 
-      <button class="batch-btn">批次更新狀態</button>
-      <button class="batch-btn">批次更新位置</button>
-      <button class="batch-btn">批次更新保管人</button>
-      <button class="batch-btn">批次列印條碼</button>
-      <button class="batch-btn">批次匯出資料</button>
+      <button class="batch-btn" (click)="batchUpdateStatus()">批次更新狀態</button>
+      <button class="batch-btn" (click)="batchUpdateLocation()">批次更新位置</button>
+      <button class="batch-btn" (click)="batchUpdateCustodian()">批次更新保管人</button>
+      <button class="batch-btn" (click)="batchPrintBarcode()">批次列印條碼</button>
+      <button class="batch-btn" (click)="batchExportData()">批次匯出資料</button>
       <button class="batch-btn danger" (click)="batchDelete()">批次刪除</button>
       <button class="batch-cancel" (click)="cancelSelection()">取消選取</button>
     </div>

@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<div mat-dialog-content>
+  <p>{{ data.message }}</p>
+  
+  <!-- 根據操作類型顯示不同的內容 -->
+  <div [ngSwitch]="data.type">
+    
+    <!-- 狀態更新選擇 -->
+    <div *ngSwitchCase="'status'" class="form-field-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>選擇狀態</mat-label>
+        <mat-select [(ngModel)]="data.selectedValue">
+          <mat-option *ngFor="let option of data.options" [value]="option.value">
+            <i *ngIf="option.icon" [class]="option.icon" class="option-icon"></i>
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- 位置更新選擇 -->
+    <div *ngSwitchCase="'location'" class="form-field-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>選擇位置</mat-label>
+        <mat-select [(ngModel)]="data.selectedValue">
+          <mat-option *ngFor="let option of data.options" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- 保管人更新選擇 -->
+    <div *ngSwitchCase="'custodian'" class="form-field-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>選擇保管人</mat-label>
+        <mat-select [(ngModel)]="data.selectedValue">
+          <mat-option *ngFor="let option of data.options" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- 條碼列印選項 -->
+    <div *ngSwitchCase="'barcode'" class="form-field-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>列印格式</mat-label>
+        <mat-select [(ngModel)]="data.selectedValue">
+          <mat-option *ngFor="let option of data.options" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- 匯出資料選項 -->
+    <div *ngSwitchCase="'export'" class="form-field-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>匯出格式</mat-label>
+        <mat-select [(ngModel)]="data.selectedValue">
+          <mat-option *ngFor="let option of data.options" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <!-- 刪除確認 -->
+    <div *ngSwitchCase="'delete'" class="warning-message">
+      <i class="fas fa-exclamation-triangle warning-icon"></i>
+      <p>此操作無法復原，請確認是否繼續？</p>
+    </div>
+    
+    <!-- 一般確認 -->
+    <div *ngSwitchCase="'confirm'">
+      <!-- 無特殊內容，僅顯示 message -->
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">{{ data.cancelButtonText }}</button>
+  <button mat-raised-button [color]="data.color" (click)="onConfirm()">{{ data.confirmButtonText }}</button>
+</div>

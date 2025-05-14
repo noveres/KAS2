@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActionMenuComponent } from '../../../shared/components/action-menu/action-menu.component';
 import { ColumnConfig } from './table-config/table-config.component';
+import { BatchOperationDialogComponent, BatchOperationDialogData } from '../../../shared/components/batch-operation-dialog/batch-operation-dialog.component';
 
 interface Asset {
   id: string;
@@ -47,6 +48,7 @@ interface Asset {
     MatTooltipModule,
     DragDropModule,
     ActionMenuComponent,
+    BatchOperationDialogComponent,
   ],
   templateUrl: './asset-maintenance.component.html',
   styleUrls: ['./asset-maintenance.component.scss']
@@ -717,24 +719,64 @@ export class AssetMaintenanceComponent implements OnInit {
   }
 
   // 批次更新狀態
-  batchUpdateStatus(status: string): void {
-    const selectedAssets = this.assets.filter(asset => asset.checked);
-    selectedAssets.forEach(asset => {
-      asset.status = status as 'normal' | 'repair' | 'borrowed' | 'scrapped';
+  batchUpdateStatus(): void {
+    const dialogData: BatchOperationDialogData = {
+      title: '批次更新狀態',
+      message: `您選擇了 ${this.selectedAssetsCount} 個資產，請選擇要更新的狀態：`,
+      type: 'status',
+      options: this.assetStatuses.map(status => ({
+        value: status.id,
+        label: status.name,
+        icon: status.icon
+      })),
+      confirmButtonText: '更新',
+      cancelButtonText: '取消',
+      color: 'primary'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
     });
-    alert(`已將 ${selectedAssets.length} 個資產狀態更新為 ${this.getStatusName(status)}`);
-    this.cancelSelection();
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const status = result as string;
+        const selectedAssets = this.assets.filter(asset => asset.checked);
+        selectedAssets.forEach(asset => {
+          asset.status = status as 'normal' | 'repair' | 'borrowed' | 'scrapped';
+        });
+        this.snackBar.open(`已將 ${selectedAssets.length} 個資產狀態更新為 ${this.getStatusName(status)}`, '關閉', { duration: 3000 });
+        this.cancelSelection();
+      }
+    });
   }
 
   // 批次刪除
   batchDelete(): void {
-    if (confirm('確定要刪除選中的資產嗎？此操作無法復原。')) {
-      const selectedIds = this.assets.filter(asset => asset.checked).map(asset => asset.id);
-      this.assets = this.assets.filter(asset => !asset.checked);
-      this.totalItems = this.assets.length;
-      alert(`已刪除 ${selectedIds.length} 個資產`);
-      this.cancelSelection();
-    }
+    const dialogData: BatchOperationDialogData = {
+      title: '批次刪除資產',
+      message: `您確定要刪除選中的 ${this.selectedAssetsCount} 個資產嗎？`,
+      type: 'delete',
+      confirmButtonText: '刪除',
+      cancelButtonText: '取消',
+      color: 'warn'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const selectedIds = this.assets.filter(asset => asset.checked).map(asset => asset.id);
+        this.assets = this.assets.filter(asset => !asset.checked);
+        this.totalItems = this.assets.length;
+        this.snackBar.open(`已刪除 ${selectedIds.length} 個資產`, '關閉', { duration: 3000 });
+        this.cancelSelection();
+      }
+    });
   }
 
 
@@ -792,6 +834,156 @@ export class AssetMaintenanceComponent implements OnInit {
     this.snackBar.open('正在前往新增資產頁面...', '關閉', { duration: 2000 });
     // 實際導向新增資產頁面的邏輯會在這裡實現
     // 可以使用 Router 導向新增資產頁面
+  }
+
+  // 批次更新位置
+  batchUpdateLocation(): void {
+    const locations = [
+      { value: '台北總部－研發部', label: '台北總部－研發部' },
+      { value: '台北總部－行政部', label: '台北總部－行政部' },
+      { value: '台北總部－財務部', label: '台北總部－財務部' },
+      { value: '台北總部－會議室A', label: '台北總部－會議室A' },
+      { value: '台北總部－會議室B', label: '台北總部－會議室B' },
+      { value: '台中分部－客服部', label: '台中分部－客服部' },
+      { value: '台中分部－行政區', label: '台中分部－行政區' },
+      { value: '高雄分部－業務部', label: '高雄分部－業務部' },
+      { value: '高雄分部－行政部', label: '高雄分部－行政部' }
+    ];
+
+    const dialogData: BatchOperationDialogData = {
+      title: '批次更新位置',
+      message: `您選擇了 ${this.selectedAssetsCount} 個資產，請選擇要更新的位置：`,
+      type: 'location',
+      options: locations,
+      confirmButtonText: '更新',
+      cancelButtonText: '取消',
+      color: 'primary'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const location = result as string;
+        const selectedAssets = this.assets.filter(asset => asset.checked);
+        selectedAssets.forEach(asset => {
+          asset.location = location;
+        });
+        this.snackBar.open(`已將 ${selectedAssets.length} 個資產位置更新為 ${location}`, '關閉', { duration: 3000 });
+        this.cancelSelection();
+      }
+    });
+  }
+
+  // 批次更新保管人
+  batchUpdateCustodian(): void {
+    const custodians = [
+      { value: '王小明', label: '王小明' },
+      { value: '李小芳', label: '李小芳' },
+      { value: '張小龍', label: '張小龍' },
+      { value: '陳總經理', label: '陳總經理' },
+      { value: '林小美', label: '林小美' },
+      { value: '黃小玲', label: '黃小玲' },
+      { value: '吳小倩', label: '吳小倩' },
+      { value: '趙小強', label: '趙小強' },
+      { value: '會議室管理員', label: '會議室管理員' },
+      { value: '公共區域', label: '公共區域' },
+      { value: '公共設備', label: '公共設備' }
+    ];
+
+    const dialogData: BatchOperationDialogData = {
+      title: '批次更新保管人',
+      message: `您選擇了 ${this.selectedAssetsCount} 個資產，請選擇要更新的保管人：`,
+      type: 'custodian',
+      options: custodians,
+      confirmButtonText: '更新',
+      cancelButtonText: '取消',
+      color: 'primary'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const custodian = result as string;
+        const selectedAssets = this.assets.filter(asset => asset.checked);
+        selectedAssets.forEach(asset => {
+          asset.custodian = custodian;
+        });
+        this.snackBar.open(`已將 ${selectedAssets.length} 個資產保管人更新為 ${custodian}`, '關閉', { duration: 3000 });
+        this.cancelSelection();
+      }
+    });
+  }
+
+  // 批次列印條碼
+  batchPrintBarcode(): void {
+    const barcodeOptions = [
+      { value: 'single', label: '單一標籤 (5x2.5cm)' },
+      { value: 'double', label: '雙標籤 (5x5cm)' },
+      { value: 'sheet', label: '整頁標籤 (A4)' }
+    ];
+
+    const dialogData: BatchOperationDialogData = {
+      title: '批次列印條碼',
+      message: `您選擇了 ${this.selectedAssetsCount} 個資產，請選擇列印格式：`,
+      type: 'barcode',
+      options: barcodeOptions,
+      confirmButtonText: '列印',
+      cancelButtonText: '取消',
+      color: 'primary'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.snackBar.open(`正在準備列印 ${this.selectedAssetsCount} 個資產的條碼，格式：${result}`, '關閉', { duration: 3000 });
+        // 實際列印邏輯會在這裡實現
+        this.cancelSelection();
+      }
+    });
+  }
+
+  // 批次匯出資料
+  batchExportData(): void {
+    const exportOptions = [
+      { value: 'excel', label: 'Excel 檔案 (.xlsx)' },
+      { value: 'csv', label: 'CSV 檔案 (.csv)' },
+      { value: 'pdf', label: 'PDF 檔案 (.pdf)' }
+    ];
+
+    const dialogData: BatchOperationDialogData = {
+      title: '批次匯出資料',
+      message: `您選擇了 ${this.selectedAssetsCount} 個資產，請選擇匯出格式：`,
+      type: 'export',
+      options: exportOptions,
+      confirmButtonText: '匯出',
+      cancelButtonText: '取消',
+      color: 'primary'
+    };
+
+    const dialogRef = this.dialog.open(BatchOperationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.snackBar.open(`正在匯出 ${this.selectedAssetsCount} 個資產的資料，格式：${result}`, '關閉', { duration: 3000 });
+        // 實際匯出邏輯會在這裡實現
+        this.cancelSelection();
+      }
+    });
   }
 
   // 處理分類篩選
