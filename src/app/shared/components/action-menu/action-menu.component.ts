@@ -19,6 +19,7 @@ export interface ActionMenuItem {
 export class ActionMenuComponent {
   @Input() menuItems: ActionMenuItem[] = [];
   @Input() position: 'left' | 'right' = 'right';
+  @Input() hideDefaultButton = false;
   @Output() menuItemClicked = new EventEmitter<string>();
   @ViewChild('menuDropdown') menuDropdown?: ElementRef;
   @ViewChild('actionBtn') actionBtn?: ElementRef;
@@ -38,7 +39,9 @@ export class ActionMenuComponent {
     this.isOpen = !this.isOpen;
     
     if (this.isOpen) {
-      setTimeout(() => this.positionMenu(), 0);
+      // 如果是外部按鈕觸發，使用外部按鈕的位置
+      const targetElement = event.currentTarget as HTMLElement;
+      setTimeout(() => this.positionMenu(targetElement), 0);
       
       // 監聽滑鼠移動事件
       document.addEventListener('mousemove', this.handleMouseMove);
@@ -48,10 +51,20 @@ export class ActionMenuComponent {
     }
   }
   
-  positionMenu(): void {
-    if (!this.actionBtn || !this.menuDropdown) return;
+  positionMenu(externalBtn?: HTMLElement): void {
+    if (!this.menuDropdown) return;
     
-    const btnRect = this.actionBtn.nativeElement.getBoundingClientRect();
+    let btnRect: DOMRect;
+    
+    // 如果提供了外部按鈕，使用外部按鈕的位置
+    if (externalBtn) {
+      btnRect = externalBtn.getBoundingClientRect();
+    } else if (this.actionBtn) {
+      btnRect = this.actionBtn.nativeElement.getBoundingClientRect();
+    } else {
+      return; // 如果沒有按鈕參考，則不顯示選單
+    }
+    
     const menuRect = this.menuDropdown.nativeElement.getBoundingClientRect();
     
     // 計算選單的位置

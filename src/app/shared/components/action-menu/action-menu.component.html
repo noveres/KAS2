@@ -1,5 +1,5 @@
 <div class="action-menu-container">
-  <button #actionBtn class="action-btn" (click)="toggleMenu($event)">
+  <button #actionBtn class="action-btn" (click)="toggleMenu($event)" *ngIf="!hideDefaultButton">
     <span class="dots">⋯</span>
   </button>
   

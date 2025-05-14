@@ -379,6 +379,30 @@ export class AssetMaintenanceComponent implements OnInit {
     }
   }
   
+  // 處理排序操作
+  handleSortAction(action: string): void {
+    switch(action) {
+      case 'sort-id':
+        this.assets.sort((a, b) => a.id.localeCompare(b.id));
+        this.snackBar.open('已依編號排序', '關閉', { duration: 2000 });
+        break;
+      case 'sort-name':
+        this.assets.sort((a, b) => a.name.localeCompare(b.name));
+        this.snackBar.open('已依名稱排序', '關閉', { duration: 2000 });
+        break;
+      case 'sort-date':
+        this.assets.sort((a, b) => a.acquisitionDate.localeCompare(b.acquisitionDate));
+        this.snackBar.open('已依取得日期排序', '關閉', { duration: 2000 });
+        break;
+      case 'sort-value':
+        this.assets.sort((a, b) => b.value - a.value);
+        this.snackBar.open('已依價值排序', '關閉', { duration: 2000 });
+        break;
+      default:
+        break;
+    }
+  }
+  
   // 導出資料
   exportData(): void {
     this.snackBar.open('資產資料匯出功能開發中', '關閉', {
