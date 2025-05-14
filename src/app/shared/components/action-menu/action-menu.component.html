@@ -1,0 +1,23 @@
+<div class="action-menu-container">
+  <button #actionBtn class="action-btn" (click)="toggleMenu($event)">
+    <span class="dots">⋯</span>
+  </button>
+  
+  <div #menuDropdown class="menu-dropdown" *ngIf="isOpen" [ngStyle]="menuStyle">
+    <ul class="menu-list">
+      <ng-container *ngFor="let item of menuItems">
+        <!-- 分隔線 -->
+        <li *ngIf="item.isSeparator" class="menu-separator"></li>
+        
+        <!-- 選單項目 -->
+        <li *ngIf="!item.isSeparator" 
+            class="menu-item" 
+            [ngClass]="{'danger': item.isDanger}"
+            (click)="onMenuItemClick(item.action || '', $event)">
+          <i *ngIf="item.icon" class="menu-icon" [ngClass]="item.icon"></i>
+          <span class="menu-label">{{item.label || ''}}</span>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</div>

@@ -1,64 +1,52 @@
-<div class="page-login">
-    <div class="login-box">
-        <!-- Logo placeholder -->
-        <div class="logo">
-            <div class="logo-placeholder">LOGO</div>
+<body>
+  <div class="bg-container">
+    <div class="login-container">
+      <div class="login-left">
+        <div class="logo-title">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" alt="logo" class="logo-img">
+          <span class="main-title">Name + logo</span>
         </div>
-
-        <!-- Error message -->
-        <div *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
-        </div>
-
-        <!-- Password login form -->
-        <form [formGroup]="loginForm" (ngSubmit)="onPasswordLogin()">
-            <div class="form-group">
-                <input type="text" formControlName="username" placeholder="管理員帳號" />
-            </div>
-
-            <div class="form-group">
-                <div class="input-group password-group">
-                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="密碼" />
-                    <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
-                        [attr.aria-label]="showPassword ? '隱藏密碼' : '顯示密碼'" [attr.title]="showPassword ? '隱藏密碼' : '顯示密碼'"
-                        aria-pressed="false">
-                        <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <line x1="3" y1="3" x2="21" y2="21"></line>
-                        </svg>
-                        <span class="visually-hidden">{{ showPassword ? '隱藏密碼' : '顯示密碼' }}</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- <label class="agreement">
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="agreement-checkbox" [checked]="keepLoggedIn"
-                        (change)="onKeepLoggedInChange($event)">
-                    <span class="checkbox-custom"></span>
-                </div>
-                保持登入
-            </label> -->
-
-            <button type="submit" class="login-button" [disabled]="isLoading">
-                <span *ngIf="!isLoading">登入</span>
-                <span *ngIf="isLoading">登入中...</span>
-            </button>
+        <form class="login-form">
+          <label>
+            統編
+            <input type="text" placeholder="請輸入公司統一編號">
+          </label>
+          <label>
+            帳號
+            <input type="text" placeholder="請輸入帳號或E-Mail">
+          </label>
+          <label>
+            密碼
+            <input type="password" placeholder="請輸入密碼">
+          </label>
+          <label>
+            公司分部
+            <select>
+              <option>請輸入公司分部</option>
+            </select>
+          </label>
+          <div class="actions-row">
+            <label class="remember-me">
+              <input type="checkbox"> 記住我
+            </label>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+          </div>
+          <button type="submit" class="sign-in-btn">Sign in</button>
+          <div class="divider-row">
+            <hr> <span>Or</span> <hr>
+          </div>
+          <button type="button" class="google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google logo">
+            Sign in with Google
+          </button>
+          <div class="signup-row">
+            Don't you have an account? <a href="#">Sign up</a>
+          </div>
         </form>
-
-        <!-- Footer links -->
-        <div class="footer-links">
-            <a href="javascript:;">忘記密碼</a>
-            <a href="javascript:;">遇到問題</a>
-        </div>
+      </div>
+      <div class="login-right">
+        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80" alt="main visual" class="main-img">
+      </div>
     </div>
-</div>
+  </div>
+</body>
