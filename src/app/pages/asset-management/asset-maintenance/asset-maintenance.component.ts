@@ -11,6 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActionMenuComponent } from '../../../shared/components/action-menu/action-menu.component';
+import { HoverMenuComponent } from '../../../shared/components/hover-menu/hover-menu.component';
 
 interface Asset {
   id: string;
@@ -41,7 +42,8 @@ interface Asset {
     MatDialogModule,
     MatPaginatorModule,
     MatSnackBarModule,
-    ActionMenuComponent
+    ActionMenuComponent,
+    HoverMenuComponent
   ],
   templateUrl: './asset-maintenance.component.html',
   styleUrls: ['./asset-maintenance.component.scss']
@@ -58,6 +60,10 @@ export class AssetMaintenanceComponent implements OnInit {
   selectedCategory: string = '';
   selectedStatus: string = '';
 
+  // 排序
+  sortField: string = 'id';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   // 批次處理
   showBatchBar: boolean = false;
   allChecked: boolean = false;
@@ -69,7 +75,7 @@ export class AssetMaintenanceComponent implements OnInit {
 
   // 分類選項
   categories = [
-    { id: '', name: '所有分類' },
+    { id: '', name: '顯示全部分類' },
     { id: 'computer', name: '電腦設備' },
     { id: 'office', name: '辦公設備' },
     { id: 'furniture', name: '辦公家具' },
@@ -79,11 +85,30 @@ export class AssetMaintenanceComponent implements OnInit {
 
   // 狀態選項
   statuses = [
-    { id: '', name: '所有狀態' },
+    { id: '', name: '顯示全部狀態' },
     { id: 'normal', name: '正常使用' },
     { id: 'repair', name: '維修中' },
     { id: 'borrowed', name: '借出' },
     { id: 'scrapped', name: '報廢' }
+  ];
+  
+  // 分類選單項目
+  categoryMenuItems = [
+    { icon: 'fas fa-list', label: '顯示全部分類', action: '' },
+    { icon: 'fas fa-laptop', label: '電腦設備', action: '電腦設備' },
+    { icon: 'fas fa-print', label: '辦公設備', action: '辦公設備' },
+    { icon: 'fas fa-chair', label: '辦公家具', action: '辦公家具' },
+    { icon: 'fas fa-tv', label: '視聽設備', action: '視聽設備' },
+    { icon: 'fas fa-tablet-alt', label: '行動裝置', action: '行動裝置' }
+  ];
+  
+  // 狀態選單項目
+  statusMenuItems = [
+    { icon: 'fas fa-list', label: '顯示全部狀態', action: '' },
+    { icon: 'fas fa-check-circle', label: '正常使用', action: 'normal' },
+    { icon: 'fas fa-tools', label: '維修中', action: 'repair' },
+    { icon: 'fas fa-hand-holding', label: '借出', action: 'borrowed' },
+    { icon: 'fas fa-trash-alt', label: '報廢', action: 'scrapped' }
   ];
 
   constructor(private snackBar: MatSnackBar) {}
@@ -229,7 +254,139 @@ export class AssetMaintenanceComponent implements OnInit {
         acquisitionDate: '2021-11-20',
         modifiedDate: '2025-04-22',
         value: 15000
-      }
+      },
+      {
+      id: 'A001',
+      name: 'Dell XPS 13 筆記型電腦',
+      category: '電腦設備',
+      location: '台北總部－研發部',
+      custodian: '王小明',
+      status: 'normal',
+      acquisitionDate: '2023-01-15',
+      modifiedDate: '2025-05-01',
+      value: 35000
+    },
+    {
+      id: 'A002',
+      name: 'HP LaserJet Pro 印表機',
+      category: '辦公設備',
+      location: '台北總部－行政部',
+      custodian: '李小芳',
+      status: 'repair',
+      acquisitionDate: '2022-11-20',
+      modifiedDate: '2025-04-22',
+      value: 12000
+    },
+    {
+      id: 'A003',
+      name: 'Samsung 55吋液晶顯示器',
+      category: '視聽設備',
+      location: '台北總部－會議室A',
+      custodian: '會議室管理員',
+      status: 'normal',
+      acquisitionDate: '2023-03-10',
+      modifiedDate: '2025-04-22',
+      value: 28000
+    },
+    {
+      id: 'A004',
+      name: 'Acer Aspire 桌上型電腦',
+      category: '電腦設備',
+      location: '台中分部－客服部',
+      custodian: '張小龍',
+      status: 'borrowed',
+      acquisitionDate: '2022-11-05',
+      modifiedDate: '2025-04-22',
+      value: 25000
+    },
+    {
+      id: 'A005',
+      name: 'Herman Miller Aeron 辦公椅',
+      category: '辦公家具',
+      location: '台北總部－執行長辦公室',
+      custodian: '陳總經理',
+      status: 'normal',
+      acquisitionDate: '2023-02-28',
+      modifiedDate: '2025-04-22',
+      value: 18000
+    },
+    {
+      id: 'A006',
+      name: 'Apple iPad Pro',
+      category: '行動裝置',
+      location: '高雄分部－業務部',
+      custodian: '林小美',
+      status: 'normal',
+      acquisitionDate: '2023-04-15',
+      modifiedDate: '2025-04-22',
+      value: 32000
+    },
+    {
+      id: 'A007',
+      name: 'Epson 投影機',
+      category: '視聽設備',
+      location: '台北總部－會議室B',
+      custodian: '會議室管理員',
+      status: 'scrapped',
+      acquisitionDate: '2020-06-10',
+      modifiedDate: '2025-04-22',
+      value: 22000
+    },
+    {
+      id: 'A008',
+      name: 'Lenovo ThinkPad X1',
+      category: '電腦設備',
+      location: '台北總部－財務部',
+      custodian: '黃小玲',
+      status: 'normal',
+      acquisitionDate: '2023-05-20',
+      modifiedDate: '2025-04-22',
+      value: 42000
+    },
+    {
+      id: 'A009',
+      name: 'Canon EOS R5 相機',
+      category: '視聽設備',
+      location: '台北總部－行銷部',
+      custodian: '吳小倩',
+      status: 'borrowed',
+      acquisitionDate: '2023-01-30',
+      modifiedDate: '2025-04-22',
+      value: 95000
+    },
+    {
+      id: 'A010',
+      name: 'Microsoft Surface Pro',
+      category: '行動裝置',
+      location: '台中分部－業務部',
+      custodian: '趙小強',
+      status: 'normal',
+      acquisitionDate: '2022-12-15',
+      modifiedDate: '2025-04-22',
+      value: 28000
+    },
+    {
+      id: 'A011',
+      name: 'IKEA 辦公桌',
+      category: '辦公家具',
+      location: '高雄分部－行政部',
+      custodian: '公共區域',
+      status: 'normal',
+      acquisitionDate: '2022-09-05',
+      modifiedDate: '2025-04-22',
+      value: 5000
+    },
+    {
+      id: 'A012',
+      name: 'Brother 多功能事務機',
+      category: '辦公設備',
+      location: '台中分部－行政區',
+      custodian: '公共設備',
+      status: 'repair',
+      acquisitionDate: '2021-11-20',
+      modifiedDate: '2025-04-22',
+      value: 15000
+    }
     ];
 
     // 為所有資產添加修改日期字段（如果沒有的話）
@@ -258,23 +415,69 @@ export class AssetMaintenanceComponent implements OnInit {
 
   // 搜尋資產
   searchAssets(): Asset[] {
-    return this.assets.filter(asset => {
-      // 搜尋條件
-      const matchesSearch = this.searchTerm ?
-        (asset.id.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-         asset.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-         asset.custodian.toLowerCase().includes(this.searchTerm.toLowerCase())) : true;
+    // 先篩選
+    const filteredAssets = this.assets.filter(asset => {
+      // 檢查資產名稱或ID是否包含搜尋字詞
+      const matchesSearch = this.searchTerm === '' ||
+        asset.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        asset.id.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      // 分類篩選
-      const matchesCategory = this.selectedCategory ?
-        asset.category === this.categories.find(c => c.id === this.selectedCategory)?.name : true;
+      // 檢查資產分類是否符合篩選
+      const matchesCategory = this.selectedCategory === '' || asset.category === this.selectedCategory;
 
-      // 狀態篩選
-      const matchesStatus = this.selectedStatus ?
-        asset.status === this.selectedStatus : true;
+      // 檢查資產狀態是否符合篩選
+      const matchesStatus = this.selectedStatus === '' || asset.status === this.selectedStatus;
 
       return matchesSearch && matchesCategory && matchesStatus;
     });
+
+    // 再排序
+    return this.sortAssets(filteredAssets);
+  }
+
+  // 排序資產
+  sortAssets(assets: Asset[]): Asset[] {
+    return [...assets].sort((a, b) => {
+      let valueA: any = a[this.sortField as keyof Asset];
+      let valueB: any = b[this.sortField as keyof Asset];
+
+      // 如果是日期字串，轉換為 Date 對象進行比較
+      if (this.sortField === 'acquisitionDate' || this.sortField === 'modifiedDate') {
+        valueA = new Date(valueA).getTime();
+        valueB = new Date(valueB).getTime();
+      }
+
+      // 如果是數字字串，轉換為數字
+      if (typeof valueA === 'string' && !isNaN(Number(valueA))) {
+        valueA = Number(valueA);
+        valueB = Number(valueB);
+      }
+
+      // 如果是字串，使用 localeCompare 進行比較
+      if (typeof valueA === 'string') {
+        const result = valueA.localeCompare(valueB);
+        return this.sortDirection === 'asc' ? result : -result;
+      }
+
+      // 其他類型直接比較
+      const result = valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+      return this.sortDirection === 'asc' ? result : -result;
+    });
+  }
+
+  // 切換排序方向
+  toggleSort(field: string): void {
+    if (this.sortField === field) {
+      // 如果點擊的是目前排序的欄位，切換排序方向
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // 如果點擊的是新的欄位，設置為升序
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+
+    // 更新分頁
+    this.updatePaginatedAssets();
   }
 
   // 取得當前頁面的資產
@@ -312,7 +515,7 @@ export class AssetMaintenanceComponent implements OnInit {
       return originalAsset?.checked === true;
     }).length;
   }
-  
+
   // 取得當前頁面被選中的資產數量
   getPageSelectedCount(): number {
     return this.paginatedAssets.filter(asset => {
@@ -326,10 +529,10 @@ export class AssetMaintenanceComponent implements OnInit {
   toggleSelectAll(): void {
     // 判斷是否全選
     this.allChecked = !this.allChecked;
-    
+
     // 取得當前頁面的資產
     const currentPageAssets = this.paginatedAssets;
-    
+
     // 只更新當前頁面資產的選擇狀態
     this.assets.forEach(asset => {
       // 檢查資產是否在當前頁面中
@@ -337,7 +540,7 @@ export class AssetMaintenanceComponent implements OnInit {
         asset.checked = this.allChecked;
       }
     });
-    
+
     this.updateBatchBarVisibility();
   }
 
@@ -445,6 +648,24 @@ export class AssetMaintenanceComponent implements OnInit {
     });
   }
 
+  // 處理分類篩選
+  handleCategoryFilter(category: string): void {
+    this.selectedCategory = category;
+    this.updatePaginatedAssets();
+    
+    const categoryName = category === '' ? '全部分類' : category;
+    this.snackBar.open(`已篩選為 ${categoryName}`, '關閉', { duration: 2000 });
+  }
+  
+  // 處理狀態篩選
+  handleStatusFilter(status: string): void {
+    this.selectedStatus = status;
+    this.updatePaginatedAssets();
+    
+    const statusName = this.getStatusName(status) || '全部狀態';
+    this.snackBar.open(`已篩選為 ${statusName}`, '關閉', { duration: 2000 });
+  }
+  
   // 處理資產操作選單的動作
   handleAssetAction(action: string, asset: Asset): void {
     switch(action) {

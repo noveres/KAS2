@@ -1,0 +1,34 @@
+.text-button-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.text-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #f5f7fa;
+  border: 1px solid #e0e5ec;
+  border-radius: 4px;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  
+  &:hover {
+    background-color: #e9f0ff;
+    border-color: #c0d7ff;
+    color: #4d8bff;
+  }
+  
+  .button-icon {
+    margin-right: 6px;
+    font-size: 14px;
+  }
+  
+  .button-text {
+    white-space: nowrap;
+  }
+}

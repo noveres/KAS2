@@ -1,0 +1,16 @@
+<div class="hover-menu-container">
+  <div class="hover-button" (click)="toggleMenu($event)">
+    <i *ngIf="buttonIcon" [class]="buttonIcon"></i>
+    <span *ngIf="buttonText">{{ buttonText }}</span>
+  </div>
+  
+  <div class="hover-menu-dropdown" [class.show]="isMenuOpen">
+    <div *ngFor="let item of menuItems" 
+         class="menu-item" 
+         [class.danger]="item.isDanger"
+         (click)="onMenuItemClick(item.action)">
+      <i *ngIf="item.icon" [class]="item.icon"></i>
+      <span>{{ item.label }}</span>
+    </div>
+  </div>
+</div>

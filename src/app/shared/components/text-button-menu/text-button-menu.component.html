@@ -1,0 +1,13 @@
+<div class="text-button-menu-container">
+  <button class="text-button" (click)="toggleMenu($event)">
+    <i *ngIf="buttonIcon" class="button-icon" [ngClass]="buttonIcon"></i>
+    <span class="button-text">{{ buttonText }}</span>
+  </button>
+  
+  <app-action-menu #actionMenuRef
+    [menuItems]="menuItems"
+    [hideDefaultButton]="true"
+    [position]="position"
+    (menuItemClicked)="onMenuItemClick($event)"
+  ></app-action-menu>
+</div>

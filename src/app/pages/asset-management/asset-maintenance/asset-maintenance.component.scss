@@ -268,6 +268,26 @@
   font-weight: 600;
   background: #f8f9fa;
   border-bottom: 2px solid #e0e5ec;
+  
+  &.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 24px;
+    
+    &:hover {
+      background-color: #e9f0ff;
+    }
+    
+    i {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: #4d8bff;
+    }
+  }
 }
 
 .asset-table tr:last-child td {
@@ -414,17 +434,17 @@ table tr td button { outline: none; }
     width: 100%;
     background: transparent;
   }
-  
+
   ::ng-deep .mat-mdc-paginator-container {
     justify-content: center;
   }
-  
+
   ::ng-deep .mat-mdc-paginator-range-label {
     margin: 0 12px;
     font-size: 14px;
     color: #555;
   }
-  
+
   ::ng-deep .mat-mdc-icon-button {
     color: #555;
     &:hover:not([disabled]) {
@@ -432,7 +452,7 @@ table tr td button { outline: none; }
       color: #4d8bff;
     }
   }
-  
+
   @media (max-width: 576px) {
     padding: 10px 0;
   }
@@ -469,11 +489,11 @@ table tr td button { outline: none; }
     border-color: #c0d7ff;
     color: #4d8bff;
   }
-  
+
   &.page-number {
     width: 40px;
     padding: 8px 0;
-    
+
     &.active {
       background: #4d8bff;
       color: white;
@@ -481,7 +501,7 @@ table tr td button { outline: none; }
       box-shadow: 0 2px 8px rgba(77, 139, 255, 0.25);
     }
   }
-  
+
   i {
     font-size: 14px;
   }
