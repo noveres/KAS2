@@ -146,42 +146,48 @@ select:focus {
 .list-header-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 0 28px 16px 28px;
-  border-bottom: 1px solid #eaeaea;
-}
+  padding: 20px 28px;
+  border-bottom: 1px solid #eee;
 
-.list-header-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #222;
-}
+  .list-header-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #222;
+    margin-right: 12px;
+  }
 
-.list-header-desc {
-  color: #777;
-  font-size: 15px;
-}
+  .list-header-desc {
+    color: #777;
+    font-size: 15px;
+    margin-right: auto;
+  }
 
-.export-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #296fe6;
-  background: transparent;
-  color: #296fe6;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s, border 0.2s, color 0.2s;
-}
+  .button-group {
+    display: flex;
+    gap: 8px;
+  }
 
-.export-btn:hover {
-  background: #f0f7ff;
-  border-color: #3887fa;
-  color: #222;
+  .export-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 15px;
+    color: #444;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f5f5f5;
+      border-color: #ccc;
+    }
+
+    span {
+      margin-right: 6px;
+    }
+  }
 }
 
 .icon-download {

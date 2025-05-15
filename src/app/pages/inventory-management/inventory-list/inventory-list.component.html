@@ -39,7 +39,11 @@
     <div class="list-header-row">
       <div class="list-header-title">盤點單列表</div>
       <div class="list-header-desc">共 4 盤點單</div>
-      <button class="export-btn"><span class="icon-download"></span>匯出 Excel</button>
+
+      <div class="button-group">
+        <button type="button" class="export-btn"><span class="icon-download"></span>匯出 Excel</button>
+        <button [routerLink]="['/inventory-check']" type="button" class="export-btn"><span class="icon-plus"></span>建立盤點單</button>
+      </div>
     </div>
     <div class="list-table-wrap">
       <table class="list-table">

@@ -35,7 +35,7 @@ export class SidebarNAVmenuDropDownComponent implements OnInit, OnDestroy {
 
   //客製化組件選擇，調整true/false決定使用那些組件樣式
   isPCMenuToggleEnabled = false; //使否啟用PC漢堡選單
-  isMobileMenuToggleEnabled = true; //使否啟用移動端漢堡選單
+  isMobileMenuToggleEnabled = false; //使否啟用移動端漢堡選單
   isMenuToggleOnVisible = true; //是否啟用關閉狀態的menu-toggle
   isMenuToggleOffVisible = true; //是否啟用開啟狀態的menu-toggle
   isHoverTriggerEnabled = false; //是否啟用懸停觸發側邊欄功能
@@ -145,29 +145,29 @@ export class SidebarNAVmenuDropDownComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
- // 登出方法
- logout(): void {
-   // 清除 token
-   localStorage.removeItem('token');
-   sessionStorage.removeItem('token');
-   localStorage.removeItem('userId');
-   localStorage.removeItem('userName');
-   localStorage.removeItem('userRole');
-   this.router.navigate(['/login']);
- }
+  // 登出方法
+  logout(): void {
+    // 清除 token
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
+    this.router.navigate(['/login']);
+  }
 
- // 切換側邊欄狀態
- toggleSidebar(): void {
-   this.isSidebarActive = !this.isSidebarActive;
-   // 保存側邊欄狀態到 localStorage
-   localStorage.setItem('sidebarActive', this.isSidebarActive.toString());
- }
+  // 切換側邊欄狀態
+  toggleSidebar(): void {
+    this.isSidebarActive = !this.isSidebarActive;
+    // 保存側邊欄狀態到 localStorage
+    localStorage.setItem('sidebarActive', this.isSidebarActive.toString());
+  }
 
   // 切換子菜單
   toggleSubmenu(menuName: string): void {
     // 檢查當前菜單是否已經展開
     const isExpanded = this.isSubmenuExpanded(menuName);
-    
+
     if (isExpanded) {
       // 如果已經展開，則關閉它
       this.expandedMenus = this.expandedMenus.filter(menu => menu !== menuName);
@@ -177,14 +177,14 @@ export class SidebarNAVmenuDropDownComponent implements OnInit, OnDestroy {
         this.expandedMenus.push(menuName);
       }
     }
-    
+
     // 更新活動菜單狀態
     this.activeSubmenu = isExpanded ? null : menuName;
-    
+
     // 保存展開狀態到 localStorage
     this.saveExpandedMenusState();
   }
-  
+
   // 保存展開菜單狀態到 localStorage
   private saveExpandedMenusState(): void {
     localStorage.setItem('expandedMenus', JSON.stringify(this.expandedMenus));
@@ -195,55 +195,55 @@ export class SidebarNAVmenuDropDownComponent implements OnInit, OnDestroy {
     return this.expandedMenus.includes(menuName);
   }
 
- // 根據 URL 獲取頁面標題
+  // 根據 URL 獲取頁面標題
 
- // 處理頭像加載錯誤
- handleAvatarError(): void {
-   console.log('頭像加載失敗，顯示默認頭像');
-   this.showDefaultAvatar = true;
- }
+  // 處理頭像加載錯誤
+  handleAvatarError(): void {
+    console.log('頭像加載失敗，顯示默認頭像');
+    this.showDefaultAvatar = true;
+  }
 
- // 處理語言變更
- onLanguageChange(language: string): void {
-   console.log('語言已變更為:', language);
-   // 這裡可以添加語言切換的邏輯
- }
+  // 處理語言變更
+  onLanguageChange(language: string): void {
+    console.log('語言已變更為:', language);
+    // 這裡可以添加語言切換的邏輯
+  }
 
- // 更新用戶信息
- private updateUserInfo(): void {
-   console.log('更新用戶信息');
-   console.log('localStorage userName:', localStorage.getItem('userName'));
-   console.log('localStorage userRole:', localStorage.getItem('userRole'));
+  // 更新用戶信息
+  private updateUserInfo(): void {
+    console.log('更新用戶信息');
+    console.log('localStorage userName:', localStorage.getItem('userName'));
+    console.log('localStorage userRole:', localStorage.getItem('userRole'));
 
-   const userName = localStorage.getItem('userName');
-   const userRole = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
+    const userRole = localStorage.getItem('userRole');
 
-   if (userName && userName.trim() !== '') {
-     this.userName = userName;
-   } else {
-     this.userName = '系統管理員';
-   }
+    if (userName && userName.trim() !== '') {
+      this.userName = userName;
+    } else {
+      this.userName = '系統管理員';
+    }
 
-   if (userRole && userRole.trim() !== '') {
-     // 轉換角色顯示
-     if (userRole === 'admin') {
-       this.userRole = '系統管理員';
-     } else if (userRole === 'staff') {
-       this.userRole = '工作人員';
-     } else {
-       this.userRole = userRole;
-     }
-   } else {
-     this.userRole = '系統管理員';
-   }
+    if (userRole && userRole.trim() !== '') {
+      // 轉換角色顯示
+      if (userRole === 'admin') {
+        this.userRole = '系統管理員';
+      } else if (userRole === 'staff') {
+        this.userRole = '工作人員';
+      } else {
+        this.userRole = userRole;
+      }
+    } else {
+      this.userRole = '系統管理員';
+    }
 
-   // 設置用戶頭像
- //   const userId = localStorage.getItem('userId');
- //   if (userId) {
- //     this.avatarUrl = this.userService.getAvatarUrl(userId);
- //     this.showDefaultAvatar = false;
- //   } else {
- //     this.showDefaultAvatar = true;
- //   }
+    // 設置用戶頭像
+    //   const userId = localStorage.getItem('userId');
+    //   if (userId) {
+    //     this.avatarUrl = this.userService.getAvatarUrl(userId);
+    //     this.showDefaultAvatar = false;
+    //   } else {
+    //     this.showDefaultAvatar = true;
+    //   }
   }
 }
