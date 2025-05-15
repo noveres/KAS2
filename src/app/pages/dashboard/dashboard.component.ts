@@ -220,7 +220,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function(context: any) {
                 const label = context.label || '';
                 const value = context.raw as number;
                 return `${label}: ${value}%`;
@@ -314,7 +314,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function(context: any) {
                 const label = context.label || '';
                 const value = context.raw as number;
                 return `${label}: ${value}%`;

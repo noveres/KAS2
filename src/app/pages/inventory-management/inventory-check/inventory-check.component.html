@@ -1,6 +1,183 @@
-<div class="container">
-  <h1>資產盤點</h1>
-  <div class="content-area">
-    <p>資產盤點功能正在開發中...</p>
+<nav class="tabs-nav">
+  <div class="tab-item" [class.active]="activeTabIndex === 0" (click)="switchTab(0)">盤點基本資料</div>
+  <div class="tab-item" [class.active]="activeTabIndex === 1" (click)="switchTab(1)">盤點明細</div>
+  <div class="tab-item" [class.active]="activeTabIndex === 2" (click)="switchTab(2)">盤點結果</div>
+</nav>
+
+<form [formGroup]="inventoryCheckForm" (ngSubmit)="onSubmit()">
+  <div class="tab-page" [class.active]="activeTabIndex === 0" id="tab-basic">
+    <div class="tab-card">
+      <div class="card-title">
+        盤點基本資料
+        <div class="card-subtitle">填寫盤點的基本資訊，包含編號、名稱、類型等</div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點編號
+            <input type="text" formControlName="checkNumber" placeholder="將由系統自動生成" readonly class="readonly-field">
+          </label>
+          <div class="info-message">盤點編號將在提交後由系統自動生成</div>
+        </div>
+        <div class="form-col">
+          <label>盤點名稱
+            <input type="text" formControlName="checkName" placeholder="例如：2024年第一季盤點">
+          </label>
+          <div *ngIf="inventoryCheckForm.get('checkName')?.touched && inventoryCheckForm.get('checkName')?.errors?.['required']" class="error-message">盤點名稱為必填欄位</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點類型
+            <select formControlName="checkType">
+              <option value="">選擇盤點類型</option>
+              <option *ngFor="let type of checkTypes" [value]="type.id">{{type.name}}</option>
+            </select>
+          </label>
+          <div *ngIf="inventoryCheckForm.get('checkType')?.touched && inventoryCheckForm.get('checkType')?.errors?.['required']" class="error-message">盤點類型為必填欄位</div>
+        </div>
+        <div class="form-col">
+          <label>盤點方式
+            <select formControlName="checkMethod">
+              <option value="">選擇盤點方式</option>
+              <option *ngFor="let method of checkMethods" [value]="method.id">{{method.name}}</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點日期
+            <div class="with-icon">
+              <span class="icon-calendar"></span>
+              <input type="date" formControlName="checkDate" class="with-calendar">
+            </div>
+          </label>
+        </div>
+        <div class="form-col">
+          <label>盤點截止日
+            <div class="with-icon">
+              <span class="icon-calendar"></span>
+              <input type="date" formControlName="checkEndDate" class="with-calendar">
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col col-wide">
+          <label>盤點說明
+            <textarea formControlName="checkDescription" placeholder="請輸入盤點的詳細說明，例如盤點目的、範圍等"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">取消</button>
+        <button type="button" class="btn-save" (click)="nextTab()">下一步</button>
+      </div>
+    </div>
   </div>
-</div>
+
+  <div class="tab-page" [class.active]="activeTabIndex === 1" id="tab-detail">
+    <div class="tab-card">
+      <div class="card-title">
+        盤點明細
+        <div class="card-subtitle">設定盤點的項目、負責人等明細資訊</div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點範圍
+            <select formControlName="checkScope">
+              <option value="">選擇盤點範圍</option>
+              <option *ngFor="let scope of checkScopes" [value]="scope.id">{{scope.name}}</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-col">
+          <label>盤點部門
+            <select formControlName="department">
+              <option value="">選擇部門</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">{{dept.name}}</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點負責人
+            <select formControlName="checkManager">
+              <option value="">選擇負責人</option>
+              <option *ngFor="let user of users" [value]="user.id">{{user.name}}</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-col">
+          <label>盤點人員
+            <button type="button" class="btn-add-staff" (click)="openStaffSelection()">選擇盤點人員</button>
+          </label>
+          <div class="staff-list" *ngIf="selectedStaff.length > 0">
+            <div class="staff-item" *ngFor="let staff of selectedStaff">
+              {{staff.name}}
+              <span class="remove-staff" (click)="removeStaff(staff.id)">×</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col col-wide">
+          <label>備註
+            <textarea formControlName="notes" placeholder="其他需說明的事項"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="prevTab()">上一步</button>
+        <button type="button" class="btn-save" (click)="nextTab()">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-page" [class.active]="activeTabIndex === 2" id="tab-result">
+    <div class="tab-card">
+      <div class="card-title">
+        盤點結果
+        <div class="card-subtitle">設定盤點的結果與後續處理方式</div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點狀態
+            <select formControlName="checkStatus">
+              <option value="">選擇狀態</option>
+              <option *ngFor="let status of checkStatuses" [value]="status.id">{{status.name}}</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-col">
+          <label>盤點結果
+            <select formControlName="checkResult">
+              <option value="">選擇結果</option>
+              <option *ngFor="let result of checkResults" [value]="result.id">{{result.name}}</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col col-wide">
+          <label>盤點結果說明
+            <textarea formControlName="resultDescription" placeholder="請輸入盤點結果的詳細說明"></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-col">
+          <label>相關文件
+            <input type="file" (change)="handleFileUpload($event, 'relatedDocuments')">
+            <span class="file-desc">{{inventoryCheckForm.get('relatedDocuments')?.value || '未選擇任何檔案'}}</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="prevTab()">上一步</button>
+        <button type="submit" class="btn-submit">提交盤點</button>
+      </div>
+    </div>
+  </div>
+</form>

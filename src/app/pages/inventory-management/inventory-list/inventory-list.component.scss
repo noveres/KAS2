@@ -1,15 +1,335 @@
-.container {
-  padding: 20px;
-  
-  h1 {
-    margin-bottom: 20px;
-    color: #333;
+body {
+  margin: 0;
+  background-color: #f8f9fa;
+  color: #333333;
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+}
+
+.inventory-wrapper {
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.inventory-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 26px;
+  color: #222;
+  letter-spacing: 2px;
+}
+
+.inventory-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.inventory-query {
+  padding: 20px 28px 24px 28px;
+}
+
+.query-header {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.query-desc {
+  color: #777;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.query-form .form-row {
+  display: flex;
+  gap: 36px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.form-col {
+  flex: 1 1 220px;
+  min-width: 190px;
+  margin-bottom: 7px;
+}
+
+.form-col label {
+  display: block;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.date-row {
+  display: flex;
+  gap: 10px;
+}
+
+.date-input {
+  padding: 9px 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 15px;
+  color: #222;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.date-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px #cddffb88;
+}
+
+select {
+  width: 100%;
+  padding: 9px 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 15px;
+  color: #222;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px #cddffb88;
+}
+
+.search-row {
+  gap: 12px !important;
+  margin-bottom: 0;
+}
+
+.search-input {
+  flex: 1 1 320px;
+  font-size: 15px;
+  border: 1px solid #e0e5ec;
+  border-radius: 6px;
+  background: #fff;
+  padding: 10px 16px;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.query-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 10px 32px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.query-btn:hover {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.inventory-list {
+  padding: 18px 0 0 0;
+}
+
+.list-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 28px 16px 28px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.list-header-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+.list-header-desc {
+  color: #777;
+  font-size: 15px;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #296fe6;
+  background: transparent;
+  color: #296fe6;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, border 0.2s, color 0.2s;
+}
+
+.export-btn:hover {
+  background: #f0f7ff;
+  border-color: #3887fa;
+  color: #222;
+}
+
+.icon-download {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  background: url('data:image/svg+xml;utf8,<svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3v7m0 0l3-3m-3 3L5 7" stroke="%23296fe6" stroke-width="1.7" stroke-linecap="round"/><rect x="3" y="12.5" width="10" height="1.5" rx="0.75" fill="%23296fe6"/></svg>') no-repeat center/16px;
+}
+
+.list-table-wrap {
+  background: #fff;
+  border-radius: 8px;
+  margin: 0 16px 18px 16px;
+  overflow-x: auto;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.list-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+}
+
+.list-table th,
+.list-table td {
+  padding: 13px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eaeaea;
+  white-space: nowrap;
+}
+
+.list-table th {
+  font-size: 15px;
+  color: #666;
+  font-weight: 700;
+  background: #f8f9fa;
+  border-bottom: 2px solid #e0e5ec;
+}
+
+.list-table tr:last-child td {
+  border-bottom: none;
+}
+
+.list-table td {
+  color: #333;
+  font-size: 15px;
+}
+
+.list-table tr:hover {
+  background: #f8fbff;
+}
+
+.status-tag {
+  padding: 6px 12px 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-block;
+  min-width: 56px;
+  text-align: center;
+}
+
+.status-green {
+  background: #e8f7ee;
+  color: #27ae60;
+}
+
+.status-yellow {
+  background: #fef9e7;
+  color: #f39c12;
+}
+
+.status-blue {
+  background: #e9f5fe;
+  color: #296fe6;
+}
+
+.status-red {
+  background: #fdedec;
+  color: #e74c3c;
+}
+
+.table-action-btn {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.table-action-btn:hover {
+  background: #f0f7ff;
+  color: #296fe6;
+  box-shadow: 0 2px 8px rgba(77, 139, 255, 0.12);
+}
+
+.icon-trash {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url('data:image/svg+xml;utf8,<svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.6 3h2.8c.27 0 .53.13.7.35l.95 1.15H17a.75.75 0 010 1.5h-1.11l-.82 10.02a1.75 1.75 0 01-1.74 1.63H6.67A1.75 1.75 0 015 15.01L4.18 5.99H3a.75.75 0 010-1.5h3.95l.95-1.15A.88.88 0 018.6 3zm6.5 2.99H4.9l.77 9.26a.25.25 0 00.25.22h6.66a.25.25 0 00.25-.22l.77-9.26z" fill="%23e36060"/></svg>') no-repeat center/20px;
+}
+
+@media (max-width: 1000px) {
+  .inventory-wrapper {
+    padding: 20px 2vw;
   }
-  
-  .content-area {
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  .inventory-query,
+  .inventory-list {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .list-table th,
+  .list-table td {
+    padding: 7px 3px;
+  }
+}
+
+@media (max-width: 600px) {
+  .inventory-title {
+    font-size: 1.3rem;
+  }
+
+  .query-header,
+  .list-header-title {
+    font-size: 1.1rem;
+  }
+
+  .inventory-card {
+    padding: 10px 0;
+  }
+
+  .list-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px;
   }
 }

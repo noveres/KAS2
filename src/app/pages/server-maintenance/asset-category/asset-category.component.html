@@ -1,6 +1,169 @@
 <div class="container">
-  <h1>資產分類</h1>
+  <div class="page-header">
+    <h1>分類列表</h1>
+    <p class="subtitle">管理系統中的資產分類資料</p>
+  </div>
+
   <div class="content-wrapper">
-    <p>資產分類管理功能正在開發中...</p>
+    <div class="filter-section">
+      <div class="filter-row">
+        <div class="filter-item">
+          <label>分類層級:</label>
+          <select [(ngModel)]="selectedLevel" (change)="filterCategories()">
+            <option value="all">全部層級</option>
+            <option value="1">大分類</option>
+            <option value="2">中分類</option>
+            <option value="3">小分類</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>上層分類:</label>
+          <select [(ngModel)]="selectedParent" (change)="filterCategories()">
+            <option value="all">全部</option>
+            <option *ngFor="let parent of parentCategories" [value]="parent.id">{{parent.name}}</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-add" (click)="openAddCategoryModal()">
+            <span class="icon-add"></span>新增分類
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>分類代碼</th>
+            <th>分類名稱</th>
+            <th>層級</th>
+            <th>上層分類</th>
+            <th>折舊年限</th>
+            <th>描述</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of filteredCategories">
+            <td>{{category.code}}</td>
+            <td>{{category.name}}</td>
+            <td>{{getLevelName(category.level)}}</td>
+            <td>{{getParentName(category.parentId)}}</td>
+            <td>{{category.depreciationYears}}年</td>
+            <td>{{category.description}}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{'active': category.isActive, 'inactive': !category.isActive}">
+                {{category.isActive ? '啟用' : '停用'}}
+              </span>
+            </td>
+            <td class="actions">
+              <button class="btn-icon" (click)="editCategory(category)" title="編輯">
+                <span class="icon-edit"></span>
+              </button>
+              <button class="btn-icon" (click)="toggleCategoryStatus(category)" [title]="category.isActive ? '停用' : '啟用'">
+                <span [ngClass]="{'icon-disable': category.isActive, 'icon-enable': !category.isActive}"></span>
+              </button>
+              <button class="btn-icon" (click)="showMoreOptions(category)" title="更多選項">
+                <span class="icon-more"></span>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredCategories.length === 0">
+            <td colspan="8" class="no-data">沒有符合條件的資料</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="filteredCategories.length > 0">
+      <button class="btn-page" [disabled]="currentPage === 1" (click)="goToPage(1)">
+        <span class="icon-first-page"></span>
+      </button>
+      <button class="btn-page" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <span class="icon-prev-page"></span>
+      </button>
+      <span class="page-info">第 {{currentPage}} 頁，共 {{totalPages}} 頁</span>
+      <button class="btn-page" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <span class="icon-next-page"></span>
+      </button>
+      <button class="btn-page" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)">
+        <span class="icon-last-page"></span>
+      </button>
+    </div>
   </div>
 </div>
+
+<!-- 新增/編輯分類的彈窗 -->
+<div class="modal" [class.show]="showModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{isEditing ? '編輯分類' : '新增分類'}}</h2>
+      <button class="btn-close" (click)="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>分類代碼 *</label>
+            <input type="text" formControlName="code" placeholder="請輸入分類代碼">
+            <div class="error-message" *ngIf="categoryForm.get('code')?.invalid && categoryForm.get('code')?.touched">
+              分類代碼為必填項
+            </div>
+          </div>
+          <div class="form-group">
+            <label>分類名稱 *</label>
+            <input type="text" formControlName="name" placeholder="請輸入分類名稱">
+            <div class="error-message" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+              分類名稱為必填項
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>層級 *</label>
+            <select formControlName="level" (change)="onLevelChange()">
+              <option value="1">大分類</option>
+              <option value="2">中分類</option>
+              <option value="3">小分類</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>上層分類</label>
+            <select formControlName="parentId" [disabled]="categoryForm.get('level')?.value === '1'">
+              <option value="">無上層分類</option>
+              <option *ngFor="let parent of availableParents" [value]="parent.id">{{parent.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>折舊年限 (年)</label>
+            <input type="number" formControlName="depreciationYears" min="0" placeholder="請輸入折舊年限">
+          </div>
+          <div class="form-group">
+            <label>狀態</label>
+            <div class="toggle-switch">
+              <input type="checkbox" formControlName="isActive" id="category-status">
+              <label for="category-status">{{categoryForm.get('isActive')?.value ? '啟用' : '停用'}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>描述</label>
+            <textarea formControlName="description" placeholder="請輸入分類描述"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeModal()">取消</button>
+          <button type="submit" class="btn-save" [disabled]="categoryForm.invalid">儲存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 遮罩層 -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()"></div>

@@ -1,6 +1,121 @@
-<div class="container">
-  <h1>盤點清冊</h1>
-  <div class="content-area">
-    <p>盤點清冊功能正在開發中...</p>
+<div class="inventory-wrapper">
+  <div class="inventory-card inventory-query">
+    <div class="query-header">查詢條件</div>
+    <div class="query-desc">請輸入查詢條件以搜尋盤點單</div>
+    <form class="query-form">
+      <div class="form-row">
+        <div class="form-col">
+          <label>盤點日期範圍</label>
+          <div class="date-row">
+            <input type="text" class="date-input" placeholder="開始日期">
+            <input type="text" class="date-input" placeholder="結束日期">
+          </div>
+        </div>
+        <div class="form-col">
+          <label>盤點模式</label>
+          <select>
+            <option>全部模式</option>
+            <option>全盤</option>
+            <option>抽盤</option>
+          </select>
+        </div>
+        <div class="form-col">
+          <label>盤點狀態</label>
+          <select>
+            <option>全部狀態</option>
+            <option>進行中</option>
+            <option>已完成</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row search-row">
+        <input type="text" class="search-input" placeholder="搜尋盤點單號或名稱...">
+        <button type="button" class="query-btn">查詢</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="inventory-card inventory-list">
+    <div class="list-header-row">
+      <div class="list-header-title">盤點單列表</div>
+      <div class="list-header-desc">共 4 盤點單</div>
+      <button class="export-btn"><span class="icon-download"></span>匯出 Excel</button>
+    </div>
+    <div class="list-table-wrap">
+      <table class="list-table">
+        <thead>
+          <tr>
+            <th>盤點單號</th>
+            <th>盤點名稱</th>
+            <th>盤點模式</th>
+            <th>盤點日期</th>
+            <th>狀態</th>
+            <th>資產總數</th>
+            <th>已盤點數</th>
+            <th>進度</th>
+            <th>建立人</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>INV-2024-Q1</td>
+            <td>2024年第一季盤點</td>
+            <td>全盤</td>
+            <td>2024-03-15</td>
+            <td><span class="status-tag status-blue">進行中</span></td>
+            <td>120</td>
+            <td>85</td>
+            <td>70.8%</td>
+            <td>王小明</td>
+            <td><app-action-menu
+                [menuItems]="[{icon: 'fas fa-eye', label: '查看', action: 'view'}, {icon: 'fas fa-edit', label: '編輯', action: 'edit'}, {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}]"
+                (menuItemClicked)="handleMenuAction($event, 'INV-2024-Q1')"></app-action-menu></td>
+          </tr>
+          <tr>
+            <td>INV-2023-Q4</td>
+            <td>2023年第四季盤點</td>
+            <td>全盤</td>
+            <td>2023-12-15</td>
+            <td><span class="status-tag status-green">已完成</span></td>
+            <td>115</td>
+            <td>115</td>
+            <td>100.0%</td>
+            <td>王小明</td>
+            <td><app-action-menu
+                [menuItems]="[{icon: 'fas fa-eye', label: '查看', action: 'view'}, {icon: 'fas fa-edit', label: '編輯', action: 'edit'}, {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}]"
+                (menuItemClicked)="handleMenuAction($event, 'INV-2023-Q4')"></app-action-menu></td>
+          </tr>
+          <tr>
+            <td>INV-2023-Q3</td>
+            <td>2023年第三季盤點</td>
+            <td>全盤</td>
+            <td>2023-09-15</td>
+            <td><span class="status-tag status-green">已完成</span></td>
+            <td>110</td>
+            <td>110</td>
+            <td>100.0%</td>
+            <td>王小明</td>
+            <td><app-action-menu
+                [menuItems]="[{icon: 'fas fa-eye', label: '查看', action: 'view'}, {icon: 'fas fa-edit', label: '編輯', action: 'edit'}, {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}]"
+                (menuItemClicked)="handleMenuAction($event, 'INV-2023-Q3')"></app-action-menu></td>
+          </tr>
+          <tr>
+            <td>INV-2023-SPEC</td>
+            <td>2023年特殊資產抽盤</td>
+            <td>抽盤</td>
+            <td>2023-07-20</td>
+            <td><span class="status-tag status-green">已完成</span></td>
+            <td>30</td>
+            <td>30</td>
+            <td>100.0%</td>
+            <td>李小華</td>
+            <td><app-action-menu
+                [menuItems]="[{icon: 'fas fa-eye', label: '查看', action: 'view'}, {icon: 'fas fa-edit', label: '編輯', action: 'edit'}, {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}]"
+                (menuItemClicked)="handleMenuAction($event, 'INV-2023-SPEC')"></app-action-menu></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

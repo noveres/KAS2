@@ -1,6 +1,94 @@
-<div class="container">
-  <h1>條碼列印</h1>
-  <div class="content-area">
-    <p>條碼列印功能正在開發中...</p>
+<div class="barcode-header">
+  <div class="barcode-title">條碼列印查詢</div>
+</div>
+<div class="barcode-subsection">
+  <div class="barcode-subtitle-row">
+    <div>
+      <div class="barcode-subtitle">今日需列印條碼資產</div>
+      <div class="barcode-desc">2025/5/15 新增的資產，共 5 筆</div>
+    </div>
+    <div class="barcode-btn-row">
+      <button class="toolbar-btn export-btn"><span class="icon-download"></span>匯出</button>
+      <button class="toolbar-btn print-btn"><span class="icon-print"></span>列印條碼</button>
+    </div>
+  </div>
+  <div class="barcode-table-wrap">
+    <table class="barcode-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>資產編號</th>
+          <th>資產名稱</th>
+          <th>分類</th>
+          <th>位置</th>
+          <th>保管人</th>
+          <th>新增日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>A008</td>
+          <td>Lenovo ThinkPad X1 Carbon 筆記型電腦</td>
+          <td>電腦設備</td>
+          <td>台北總部 - 業務部</td>
+          <td>陳小華</td>
+          <td>2024-05-06</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>A009</td>
+          <td>Brother MFC-L3750CDW 多功能印表機</td>
+          <td>辦公設備</td>
+          <td>台北總部 - 行政部</td>
+          <td>行政部共用</td>
+          <td>2024-05-06</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>A010</td>
+          <td>ASUS ProArt 顯示器</td>
+          <td>電腦設備</td>
+          <td>台北總部 - 設計部</td>
+          <td>林小美</td>
+          <td>2024-05-06</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>A011</td>
+          <td>Logitech MX Master 3 無線滑鼠</td>
+          <td>電腦周邊</td>
+          <td>台北總部 - 研發部</td>
+          <td>王小明</td>
+          <td>2024-05-06</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>A012</td>
+          <td>Microsoft Surface Pro 8</td>
+          <td>行動裝置</td>
+          <td>台北總部 - 執行長辦公室</td>
+          <td>陳總經理</td>
+          <td>2024-05-06</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="barcode-options">
+    <label><input type="checkbox"> 同時列印 QR Code</label>
+    <label><input type="checkbox" checked> 包含資產基本資訊</label>
+  </div>
+</div>
+<div class="barcode-preview-section">
+  <div class="barcode-preview-title">條碼預覽</div>
+  <div class="barcode-preview-content">
+    <div class="barcode-sample-box">
+      <div class="barcode-img-placeholder">條碼圖片預覽</div>
+      <div class="barcode-asset-text">
+        <div class="barcode-asset-id">A008</div>
+        <div class="barcode-asset-name">Lenovo ThinkPad X1 Carbon 筆記型電腦</div>
+        <div class="barcode-asset-user">保管人：陳小華</div>
+      </div>
+    </div>
   </div>
 </div>
