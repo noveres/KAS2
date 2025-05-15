@@ -25,6 +25,16 @@ export const routes: Routes = [
     // canActivate: [AuthGuard]
   },
   {
+    path: 'change-history',
+    loadComponent: () => import('./pages/asset-management/change-history/change-history.component').then(m => m.ChangeHistoryComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'print-settings',
+    loadComponent: () => import('./pages/asset-management/print-settings/print-settings.component').then(m => m.PrintSettingsComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
     path: 'asset-maintenance',
     loadComponent: () => import('./pages/asset-management/asset-maintenance/asset-maintenance.component').then(m => m.AssetMaintenanceComponent),
     // canActivate: [AuthGuard]
@@ -53,6 +63,16 @@ export const routes: Routes = [
   {
     path: 'inventory-check',
     loadComponent: () => import('./pages/inventory-management/inventory-check/inventory-check.component').then(m => m.InventoryCheckComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory-exception-list',
+    loadComponent: () => import('./pages/inventory-management/inventory-exception-list/inventory-exception-list.component').then(m => m.InventoryExceptionListComponent),
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory-result-input',
+    loadComponent: () => import('./pages/inventory-management/inventory-result-input/inventory-result-input.component').then(m => m.InventoryResultInputComponent),
     // canActivate: [AuthGuard]
   },
   {
