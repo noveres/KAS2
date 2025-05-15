@@ -1,1 +1,119 @@
-<p>company-info works!</p>
+<div class="container">
+    <div class="company-card">
+        <div class="card-header">
+            <div class="header-title">公司列表</div>
+            <div class="header-subtitle">管理系統中的公司資料</div>
+            <button class="btn-add" (click)="openCompanyModal()">
+                <span class="icon-add"></span>
+                新增公司
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>公司代碼</th>
+                        <th>公司名稱</th>
+                        <th>統一編號</th>
+                        <th>地址</th>
+                        <th>電話</th>
+                        <th>狀態</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let company of companies">
+                        <td>{{ company.code }}</td>
+                        <td>{{ company.name }}</td>
+                        <td>{{ company.taxId }}</td>
+                        <td>{{ company.address }}</td>
+                        <td>{{ company.phone }}</td>
+                        <td>
+                            <span class="status-badge"
+                                [ngClass]="{'active': company.isActive, 'inactive': !company.isActive}">
+                                {{ company.isActive ? '啟用' : '停用' }}
+                            </span>
+                        </td>
+                        <td>
+                            <app-action-menu [menuItems]="[
+                  {icon: 'fas fa-edit', label: '編輯公司', action: 'edit'},
+                  {icon: 'fas fa-sitemap', label: '管理部門', action: 'departments'},
+                  {icon: 'fas fa-trash', label: '刪除公司', action: 'delete', isDanger: true}
+                ]" (menuItemClicked)="handleMenuAction($event, company.code)">
+                            </app-action-menu>
+                        </td>
+                    </tr>
+                    <tr *ngIf="companies.length === 0">
+                        <td colspan="7" class="no-data">尚無公司資料</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 新增/編輯公司彈窗 -->
+    <div class="modal" [ngClass]="{show: showModal}" *ngIf="showModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>{{ isEditMode ? '編輯公司' : '新增公司' }}</h2>
+                <button class="btn-close" (click)="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="companyForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="code">公司代碼</label>
+                            <input type="text" id="code" formControlName="code" [readonly]="isEditMode">
+                            <div class="error-message"
+                                *ngIf="companyForm.get('code')?.invalid && companyForm.get('code')?.touched">
+                                公司代碼為必填項
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">公司名稱</label>
+                            <input type="text" id="name" formControlName="name">
+                            <div class="error-message"
+                                *ngIf="companyForm.get('name')?.invalid && companyForm.get('name')?.touched">
+                                公司名稱為必填項
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taxId">統一編號</label>
+                            <input type="text" id="taxId" formControlName="taxId">
+                            <div class="error-message"
+                                *ngIf="companyForm.get('taxId')?.invalid && companyForm.get('taxId')?.touched">
+                                請輸入有效的統一編號
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">電話</label>
+                            <input type="text" id="phone" formControlName="phone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="address">地址</label>
+                            <input type="text" id="address" formControlName="address">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>狀態</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="isActive" formControlName="isActive">
+                                <label for="isActive">{{ companyForm.get('isActive')?.value ? '啟用' : '停用' }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" (click)="closeModal()">取消</button>
+                <button class="btn-save" [disabled]="companyForm.invalid" (click)="saveCompany()">儲存</button>
+            </div>
+        </div>
+    </div>
+</div>

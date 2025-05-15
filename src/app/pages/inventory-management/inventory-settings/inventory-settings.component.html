@@ -1,6 +1,337 @@
 <div class="container">
-  <h1>盤點設置</h1>
-  <div class="content-area">
-    <p>盤點設置功能正在開發中...</p>
+  <div class="settings-header">
+    <h1>盤點設置</h1>
+    <p class="subtitle">設置盤點系統的基本參數與人員配置</p>
+  </div>
+
+  <div class="settings-tabs">
+    <div class="tab" [ngClass]="{active: activeTab === 'personnel'}" (click)="setActiveTab('personnel')">
+      <span class="tab-icon personnel-icon"></span>
+      人員設置
+    </div>
+    <div class="tab" [ngClass]="{active: activeTab === 'defaults'}" (click)="setActiveTab('defaults')">
+      <span class="tab-icon defaults-icon"></span>
+      默認設置
+    </div>
+    <!-- <div class="tab" [ngClass]="{active: activeTab === 'notifications'}" (click)="setActiveTab('notifications')">
+      <span class="tab-icon notifications-icon"></span>
+      通知設置
+    </div> -->
+  </div>
+
+  <!-- 人員設置頁籤 -->
+  <div class="tab-content" *ngIf="activeTab === 'personnel'">
+    <div class="card">
+      <div class="card-header">
+        <h2>負責人設置</h2>
+        <button class="btn-add" (click)="openManagerModal()">
+          <span class="icon-add"></span>
+          新增負責人
+        </button>
+      </div>
+      <div class="card-body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>部門</th>
+              <th>姓名</th>
+              <th>職稱</th>
+              <th>聯絡電話</th>
+              <th>電子郵件</th>
+              <th>狀態</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let manager of managers">
+              <td>{{ manager.department }}</td>
+              <td>{{ manager.name }}</td>
+              <td>{{ manager.title }}</td>
+              <td>{{ manager.phone }}</td>
+              <td>{{ manager.email }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="{'active': manager.isActive, 'inactive': !manager.isActive}">
+                  {{ manager.isActive ? '啟用' : '停用' }}
+                </span>
+              </td>
+              <td>
+                <app-action-menu [menuItems]="[
+                    {icon: 'fas fa-edit', label: '編輯', action: 'edit'},
+                    {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}
+                  ]" (menuItemClicked)="handleManagerAction($event, manager.id)">
+                </app-action-menu>
+              </td>
+            </tr>
+            <tr *ngIf="managers.length === 0">
+              <td colspan="7" class="no-data">尚未設置任何負責人</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>盤點人員設置</h2>
+        <button class="btn-add" (click)="openStaffModal()">
+          <span class="icon-add"></span>
+          新增盤點人員
+        </button>
+      </div>
+      <div class="card-body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>部門</th>
+              <th>姓名</th>
+              <th>職稱</th>
+              <th>聯絡電話</th>
+              <th>電子郵件</th>
+              <th>狀態</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let staff of staffMembers">
+              <td>{{ staff.department }}</td>
+              <td>{{ staff.name }}</td>
+              <td>{{ staff.title }}</td>
+              <td>{{ staff.phone }}</td>
+              <td>{{ staff.email }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="{'active': staff.isActive, 'inactive': !staff.isActive}">
+                  {{ staff.isActive ? '啟用' : '停用' }}
+                </span>
+              </td>
+              <td>
+                <app-action-menu [menuItems]="[
+                    {icon: 'fas fa-edit', label: '編輯', action: 'edit'},
+                    {icon: 'fas fa-trash', label: '刪除', action: 'delete', isDanger: true}
+                  ]" (menuItemClicked)="handleStaffAction($event, staff.id)">
+                </app-action-menu>
+              </td>
+            </tr>
+            <tr *ngIf="staffMembers.length === 0">
+              <td colspan="7" class="no-data">尚未設置任何盤點人員</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 默認設置頁籤 -->
+  <div class="tab-content" *ngIf="activeTab === 'defaults'">
+    <div class="card">
+      <div class="card-header">
+        <h2>盤點默認設置</h2>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="defaultsForm" class="settings-form">
+          <div class="form-group">
+            <label for="defaultInventoryDays">盤點默認天數</label>
+            <input type="number" id="defaultInventoryDays" formControlName="defaultInventoryDays" min="1" max="90">
+            <div class="hint-text">設置新建盤點單的默認完成天數</div>
+          </div>
+
+          <div class="form-group">
+            <label for="defaultReminderDays">提醒天數</label>
+            <input type="number" id="defaultReminderDays" formControlName="defaultReminderDays" min="1" max="30">
+            <div class="hint-text">設置盤點到期前多少天開始提醒</div>
+          </div>
+
+          <div class="form-group">
+            <label>自動關閉盤點單</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="autoCloseEnabled" formControlName="autoCloseEnabled">
+              <label for="autoCloseEnabled">{{ defaultsForm.get('autoCloseEnabled')?.value ? '啟用' : '停用' }}</label>
+            </div>
+            <div class="hint-text">設置是否在盤點完成後自動關閉盤點單</div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-save" (click)="saveDefaultSettings()">保存設置</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知設置頁籤 -->
+  <!-- <div class="tab-content" *ngIf="activeTab === 'notifications'">
+    <div class="card">
+      <div class="card-header">
+        <h2>通知設置</h2>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="notificationsForm" class="settings-form">
+          <div class="form-group">
+            <label>盤點開始通知</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="startNotification" formControlName="startNotification">
+              <label for="startNotification">{{ notificationsForm.get('startNotification')?.value ? '啟用' : '停用'
+                }}</label>
+            </div>
+            <div class="hint-text">盤點開始時通知相關人員</div>
+          </div>
+
+          <div class="form-group">
+            <label>盤點提醒通知</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="reminderNotification" formControlName="reminderNotification">
+              <label for="reminderNotification">{{ notificationsForm.get('reminderNotification')?.value ? '啟用' : '停用'
+                }}</label>
+            </div>
+            <div class="hint-text">盤點即將到期時發送提醒通知</div>
+          </div>
+
+          <div class="form-group">
+            <label>盤點完成通知</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="completionNotification" formControlName="completionNotification">
+              <label for="completionNotification">{{ notificationsForm.get('completionNotification')?.value ? '啟用' :
+                '停用' }}</label>
+            </div>
+            <div class="hint-text">盤點完成時通知相關人員</div>
+          </div>
+
+          <div class="form-group">
+            <label for="notificationEmail">通知郵件地址</label>
+            <input type="email" id="notificationEmail" formControlName="notificationEmail">
+            <div class="hint-text">設置接收通知的額外郵件地址，多個地址請用分號(;)分隔</div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-save" (click)="saveNotificationSettings()">保存設置</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- 負責人新增/編輯彈窗 -->
+  <div class="modal" [ngClass]="{show: showManagerModal}" *ngIf="showManagerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? '編輯負責人' : '新增負責人' }}</h2>
+        <button class="btn-close" (click)="closeManagerModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="managerForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="managerDepartment">部門</label>
+              <input type="text" id="managerDepartment" formControlName="department">
+              <div class="error-message"
+                *ngIf="managerForm.get('department')?.invalid && managerForm.get('department')?.touched">
+                部門為必填項
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="managerName">姓名</label>
+              <input type="text" id="managerName" formControlName="name">
+              <div class="error-message" *ngIf="managerForm.get('name')?.invalid && managerForm.get('name')?.touched">
+                姓名為必填項
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="managerTitle">職稱</label>
+              <input type="text" id="managerTitle" formControlName="title">
+            </div>
+            <div class="form-group">
+              <label for="managerPhone">聯絡電話</label>
+              <input type="text" id="managerPhone" formControlName="phone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="managerEmail">電子郵件</label>
+              <input type="email" id="managerEmail" formControlName="email">
+              <div class="error-message" *ngIf="managerForm.get('email')?.invalid && managerForm.get('email')?.touched">
+                請輸入有效的電子郵件地址
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>狀態</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="managerIsActive" formControlName="isActive">
+                <label for="managerIsActive">{{ managerForm.get('isActive')?.value ? '啟用' : '停用' }}</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeManagerModal()">取消</button>
+        <button class="btn-save" [disabled]="managerForm.invalid" (click)="saveManager()">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 盤點人員新增/編輯彈窗 -->
+  <div class="modal" [ngClass]="{show: showStaffModal}" *ngIf="showStaffModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? '編輯盤點人員' : '新增盤點人員' }}</h2>
+        <button class="btn-close" (click)="closeStaffModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="staffForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="staffDepartment">部門</label>
+              <input type="text" id="staffDepartment" formControlName="department">
+              <div class="error-message"
+                *ngIf="staffForm.get('department')?.invalid && staffForm.get('department')?.touched">
+                部門為必填項
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="staffName">姓名</label>
+              <input type="text" id="staffName" formControlName="name">
+              <div class="error-message" *ngIf="staffForm.get('name')?.invalid && staffForm.get('name')?.touched">
+                姓名為必填項
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="staffTitle">職稱</label>
+              <input type="text" id="staffTitle" formControlName="title">
+            </div>
+            <div class="form-group">
+              <label for="staffPhone">聯絡電話</label>
+              <input type="text" id="staffPhone" formControlName="phone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="staffEmail">電子郵件</label>
+              <input type="email" id="staffEmail" formControlName="email">
+              <div class="error-message" *ngIf="staffForm.get('email')?.invalid && staffForm.get('email')?.touched">
+                請輸入有效的電子郵件地址
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>狀態</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="staffIsActive" formControlName="isActive">
+                <label for="staffIsActive">{{ staffForm.get('isActive')?.value ? '啟用' : '停用' }}</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeStaffModal()">取消</button>
+        <button class="btn-save" [disabled]="staffForm.invalid" (click)="saveStaff()">儲存</button>
+      </div>
+    </div>
   </div>
 </div>

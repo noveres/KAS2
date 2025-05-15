@@ -1,6 +1,120 @@
 <div class="container">
-  <h1>使用者角色</h1>
+  <div class="role-header">
+    <h1>角色列表</h1>
+    <p class="subtitle">設定系統中的使用者角色</p>
+  </div>
+
   <div class="content-wrapper">
-    <p>使用者角色管理功能正在開發中...</p>
+    <div class="action-bar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="搜尋角色" [(ngModel)]="searchText" (input)="filterRoles()">
+      </div>
+      <!-- <button class="btn-add" (click)="openRoleModal()">
+        <i class="fas fa-plus"></i> 新增角色
+      </button> -->
+    </div>
+
+    <div class="role-table-container">
+      <table class="role-table">
+        <thead>
+          <tr>
+            <th>角色代碼</th>
+            <th>角色名稱</th>
+            <th>描述</th>
+            <th>使用者數</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of filteredRoles">
+            <td>{{ role.code }}</td>
+            <td>{{ role.name }}</td>
+            <td>{{ role.description }}</td>
+            <td>{{ role.userCount }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{'active': role.isActive, 'inactive': !role.isActive}">
+                {{ role.isActive ? '啟用' : '停用' }}
+              </span>
+            </td>
+            <td>
+              <div class="action-menu">
+                <button class="action-button" (click)="toggleActionMenu(role.id)" title="角色操作選單" aria-label="角色操作選單">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="action-dropdown" *ngIf="activeActionMenu === role.id">
+                  <ul>
+                    <li>
+                      <i class="fas fa-edit"></i> 編輯角色
+                    </li>
+                    <li (click)="toggleRoleStatus(role.id)">
+                      <i [ngClass]="role.isActive ? 'fas fa-ban' : 'fas fa-check'"></i>
+                      {{ role.isActive ? '停用角色' : '啟用角色' }}
+                    </li>
+                    <!-- <li (click)="deleteRole(role.id)" class="danger">
+                      <i class="fas fa-trash"></i> 刪除角色
+                    </li> -->
+                  </ul>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="no-data" *ngIf="filteredRoles.length === 0">
+        <i class="fas fa-info-circle"></i>
+        <p>沒有找到符合條件的角色</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 角色編輯彈窗 -->
+  <div class="modal" [ngClass]="{show: showRoleModal}" *ngIf="showRoleModal" (click)="closeModalOnOutsideClick($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? '編輯角色' : '新增角色' }}</h2>
+        <button class="btn-close" (click)="closeRoleModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="roleForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="roleCode">角色代碼</label>
+              <input type="text" id="roleCode" formControlName="code" [readonly]="isEditMode">
+              <div class="error-message" *ngIf="roleForm.get('code')?.invalid && roleForm.get('code')?.touched">
+                角色代碼為必填項
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="roleName">角色名稱</label>
+              <input type="text" id="roleName" formControlName="name">
+              <div class="error-message" *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
+                角色名稱為必填項
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="roleDescription">描述</label>
+            <input type="text" id="roleDescription" formControlName="description">
+          </div>
+
+          <div class="form-group">
+            <label for="roleStatus">狀態</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="roleStatus" formControlName="isActive">
+              <label for="roleStatus">{{ roleForm.get('isActive')?.value ? '啟用' : '停用' }}</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeRoleModal()">取消</button>
+        <button class="btn-save" [disabled]="roleForm.invalid" (click)="saveRole()">儲存</button>
+      </div>
+    </div>
   </div>
 </div>
