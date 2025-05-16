@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActionMenuComponent } from '../../../shared/components/action-menu/action-menu.component';
+import { StatusToggleButtonComponent } from '../../../shared/components/status-toggle-button/status-toggle-button.component';
 
 interface Company {
   code: string;
@@ -15,7 +16,12 @@ interface Company {
 @Component({
   selector: 'app-company-info',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ActionMenuComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ActionMenuComponent,
+    StatusToggleButtonComponent
+  ],
   templateUrl: './company-info.component.html',
   styleUrl: './company-info.component.scss'
 })
@@ -124,6 +130,9 @@ export class CompanyInfoComponent implements OnInit {
   }
 
   handleMenuAction(action: string, companyCode: string): void {
+    const company = this.companies.find(c => c.code === companyCode);
+    if (!company) return;
+
     switch (action) {
       case 'edit':
         this.openCompanyModal(companyCode);
@@ -137,8 +146,19 @@ export class CompanyInfoComponent implements OnInit {
           this.deleteCompany(companyCode);
         }
         break;
+      case 'toggleStatus':
+        this.toggleCompanyStatus(company);
+        break;
       default:
         break;
+    }
+  }
+
+  toggleCompanyStatus(company: Company): void {
+    const index = this.companies.findIndex(c => c.code === company.code);
+    if (index !== -1) {
+      this.companies[index].isActive = !this.companies[index].isActive;
+      console.log(`公司 ${company.name} 狀態已切換為 ${this.companies[index].isActive ? '啟用' : '停用'}`);
     }
   }
 

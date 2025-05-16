@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActionMenuComponent } from '../../../shared/components/action-menu/action-menu.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { StatusToggleButtonComponent } from '../../../shared/components/status-toggle-button/status-toggle-button.component';
+
 
 // 定義資產分類介面
 interface AssetCategory {
@@ -17,7 +21,14 @@ interface AssetCategory {
 @Component({
   selector: 'app-asset-category',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ActionMenuComponent,
+    MatSnackBarModule,
+    StatusToggleButtonComponent,
+  ],
   templateUrl: './asset-category.component.html',
   styleUrl: './asset-category.component.scss'
 })
@@ -27,23 +38,23 @@ export class AssetCategoryComponent implements OnInit {
   filteredCategories: AssetCategory[] = [];
   parentCategories: AssetCategory[] = [];
   availableParents: AssetCategory[] = [];
-  
+
   // 篩選條件
   selectedLevel: string = 'all';
   selectedParent: string = 'all';
-  
+
   // 分頁
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 1;
-  
+
   // 表單相關
   categoryForm: FormGroup;
   showModal: boolean = false;
   isEditing: boolean = false;
   currentCategoryId: string = '';
-  
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar) {
     // 初始化表單
     this.categoryForm = this.fb.group({
       code: ['', Validators.required],
@@ -55,14 +66,14 @@ export class AssetCategoryComponent implements OnInit {
       isActive: [true]
     });
   }
-  
+
   ngOnInit(): void {
     // 載入模擬資料
     this.loadMockData();
     this.filterCategories();
     this.updateParentCategories();
   }
-  
+
   // 載入模擬資料
   loadMockData(): void {
     this.categories = [
@@ -75,51 +86,51 @@ export class AssetCategoryComponent implements OnInit {
       { id: '7', code: 'FURN-DK', name: '辦公桌', level: '2', parentId: '5', depreciationYears: 5, description: '各種辦公桌', isActive: true },
     ];
   }
-  
+
   // 根據篩選條件過濾分類
   filterCategories(): void {
     let filtered = [...this.categories];
-    
+
     // 根據層級篩選
     if (this.selectedLevel !== 'all') {
       filtered = filtered.filter(category => category.level === this.selectedLevel);
     }
-    
+
     // 根據上層分類篩選
     if (this.selectedParent !== 'all') {
       filtered = filtered.filter(category => category.parentId === this.selectedParent);
     }
-    
+
     this.filteredCategories = filtered;
     this.calculatePagination();
   }
-  
+
   // 計算分頁
   calculatePagination(): void {
     this.totalPages = Math.ceil(this.filteredCategories.length / this.pageSize);
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
     }
-    
+
     // 分頁顯示資料
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.filteredCategories = this.filteredCategories.slice(startIndex, endIndex);
   }
-  
+
   // 更新上層分類選項
   updateParentCategories(): void {
     // 取得所有可作為上層分類的項目（大分類和中分類）
     this.parentCategories = this.categories.filter(category => category.level === '1' || category.level === '2');
   }
-  
+
   // 根據選擇的層級更新可用的上層分類
   onLevelChange(): void {
     const selectedLevel = this.categoryForm.get('level')?.value;
-    
+
     // 重置上層分類
     this.categoryForm.patchValue({ parentId: '' });
-    
+
     // 根據選擇的層級設定可用的上層分類
     if (selectedLevel === '1') { // 大分類沒有上層分類
       this.availableParents = [];
@@ -132,7 +143,7 @@ export class AssetCategoryComponent implements OnInit {
       this.categoryForm.get('parentId')?.enable();
     }
   }
-  
+
   // 取得層級名稱
   getLevelName(level: string): string {
     switch(level) {
@@ -142,14 +153,14 @@ export class AssetCategoryComponent implements OnInit {
       default: return '';
     }
   }
-  
+
   // 取得上層分類名稱
   getParentName(parentId: string): string {
     if (!parentId) return '-';
     const parent = this.categories.find(category => category.id === parentId);
     return parent ? parent.name : '-';
   }
-  
+
   // 開啟新增分類彈窗
   openAddCategoryModal(): void {
     this.isEditing = false;
@@ -162,7 +173,7 @@ export class AssetCategoryComponent implements OnInit {
     this.onLevelChange();
     this.showModal = true;
   }
-  
+
   // 開啟編輯分類彈窗
   editCategory(category: AssetCategory): void {
     this.isEditing = true;
@@ -179,18 +190,18 @@ export class AssetCategoryComponent implements OnInit {
     this.onLevelChange();
     this.showModal = true;
   }
-  
+
   // 關閉彈窗
   closeModal(): void {
     this.showModal = false;
   }
-  
+
   // 儲存分類
   saveCategory(): void {
     if (this.categoryForm.invalid) return;
-    
+
     const formData = this.categoryForm.value;
-    
+
     if (this.isEditing) {
       // 更新現有分類
       const index = this.categories.findIndex(c => c.id === this.currentCategoryId);
@@ -220,13 +231,13 @@ export class AssetCategoryComponent implements OnInit {
         isActive: formData.isActive
       });
     }
-    
+
     // 更新資料
     this.filterCategories();
     this.updateParentCategories();
     this.closeModal();
   }
-  
+
   // 切換分類狀態
   toggleCategoryStatus(category: AssetCategory): void {
     const index = this.categories.findIndex(c => c.id === category.id);
@@ -235,13 +246,32 @@ export class AssetCategoryComponent implements OnInit {
       this.filterCategories();
     }
   }
-  
-  // 顯示更多選項
-  showMoreOptions(category: AssetCategory): void {
-    // 這裡可以實現更多選項的功能，例如刪除、複製等
-    console.log('顯示更多選項', category);
+
+  // 處理分類操作
+  handleCategoryAction(action: string, category: AssetCategory): void {
+    switch (action) {
+      case 'view':
+        console.log('查看分類詳情:', category);
+        this.snackBar.open(`查看分類詳情: ${category.name}`, '關閉', { duration: 3000 });
+        break;
+      case 'edit':
+        this.editCategory(category);
+        break;
+      case 'delete':
+        if (confirm(`確定要刪除分類 ${category.name} 嗎？`)) {
+          const index = this.categories.findIndex(c => c.id === category.id);
+          if (index !== -1) {
+            this.categories.splice(index, 1);
+            this.filterCategories();
+            this.updateParentCategories();
+          }
+        }
+        break;
+      default:
+        console.log('未知操作:', action);
+    }
   }
-  
+
   // 分頁導航
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;

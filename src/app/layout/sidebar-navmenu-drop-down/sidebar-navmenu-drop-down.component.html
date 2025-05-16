@@ -143,32 +143,6 @@
                   <span>資產維護</span>
                 </a>
               </li>
-            </ul>
-          </li>
-
-
-
-          <!-- 條碼管理選項 -->
-          <li class="menu-item-with-submenu">
-            <a href="javascript:void(0)" (click)="toggleSubmenu('barcodeManagement')"
-              [class.active]="activeSubmenu === 'barcodeManagement'">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-barcode">
-                <path d="M3 5v14" />
-                <path d="M8 5v14" />
-                <path d="M12 5v14" />
-                <path d="M17 5v14" />
-                <path d="M21 5v14" />
-              </svg>
-              <span>條碼管理</span>
-              <svg class="submenu-arrow" [class.rotated]="isSubmenuExpanded('barcodeManagement')"
-                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-              </svg>
-            </a>
-            <ul class="submenu" [class.active]="isSubmenuExpanded('barcodeManagement')">
               <li>
                 <a routerLink="/barcode-print" routerLinkActive="active">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -179,20 +153,12 @@
                   <span>條碼列印</span>
                 </a>
               </li>
-              <li>
-                <a routerLink="/print-settings" routerLinkActive="active">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    viewBox="0 0 16 16">
-                    <path
-                      d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                    <path
-                      d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                  </svg>
-                  <span>列印設定</span>
-                </a>
-              </li>
             </ul>
           </li>
+
+
+
+
 
           <!-- 盤點管理選項 -->
           <li class="menu-item-with-submenu">

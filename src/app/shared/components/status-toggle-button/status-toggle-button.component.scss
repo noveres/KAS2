@@ -1,0 +1,16 @@
+.status-toggle-btn {
+  padding: 2px 16px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  &.active {
+    background: #e8f7ee;
+    color: #27ae60;
+  }
+  &.inactive {
+    background: #f8f9fa;
+    color: #6c757d;
+  }
+}

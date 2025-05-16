@@ -54,20 +54,19 @@
             <td>{{category.depreciationYears}}年</td>
             <td>{{category.description}}</td>
             <td>
-              <span class="status-badge" [ngClass]="{'active': category.isActive, 'inactive': !category.isActive}">
-                {{category.isActive ? '啟用' : '停用'}}
-              </span>
+  <app-status-toggle-button
+    [status]="category.isActive"
+    (statusChange)="toggleCategoryStatus(category)">
+  </app-status-toggle-button>
             </td>
             <td class="actions">
-              <button class="btn-icon" (click)="editCategory(category)" title="編輯">
-                <span class="icon-edit"></span>
-              </button>
-              <button class="btn-icon" (click)="toggleCategoryStatus(category)" [title]="category.isActive ? '停用' : '啟用'">
-                <span [ngClass]="{'icon-disable': category.isActive, 'icon-enable': !category.isActive}"></span>
-              </button>
-              <button class="btn-icon" (click)="showMoreOptions(category)" title="更多選項">
-                <span class="icon-more"></span>
-              </button>
+              <app-action-menu [menuItems]="[
+              { isTitle: true, label: '資產操作' },
+               { icon: 'fas fa-eye', label: '查看詳情', action: 'view' },
+               { icon: 'fas fa-edit', label: '編輯資產', action: 'edit' },
+               { isSeparator: true },
+               { icon: 'fas fa-trash', label: '刪除資產', action: 'delete', isDanger: true }
+             ]" (menuItemClicked)="handleCategoryAction($event, category)"></app-action-menu>
             </td>
           </tr>
           <tr *ngIf="filteredCategories.length === 0">

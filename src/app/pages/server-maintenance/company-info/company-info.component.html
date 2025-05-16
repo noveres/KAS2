@@ -30,10 +30,10 @@
                         <td>{{ company.address }}</td>
                         <td>{{ company.phone }}</td>
                         <td>
-                            <span class="status-badge"
-                                [ngClass]="{'active': company.isActive, 'inactive': !company.isActive}">
-                                {{ company.isActive ? '啟用' : '停用' }}
-                            </span>
+                          <app-status-toggle-button
+                          [status]="company.isActive"
+                          (statusChange)="toggleCompanyStatus(company)">
+                        </app-status-toggle-button>
                         </td>
                         <td>
                             <app-action-menu [menuItems]="[

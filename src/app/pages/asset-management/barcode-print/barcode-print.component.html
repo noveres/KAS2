@@ -11,7 +11,8 @@
       <div class="toolbar-left">
         <div class="search-box">
           <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" placeholder="搜尋資產編號、名稱或保管人…" [(ngModel)]="searchTerm">
+          <input type="text" class="search-input" placeholder="搜尋資產編號、名稱或保管人…" 
+                 [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
         </div>
       </div>
 
@@ -42,11 +43,11 @@
 
         <!-- 操作按鈕 -->
         <div class="action-buttons">
-          <button class="toolbar-btn export-btn">
+          <button class="toolbar-btn export-btn" (click)="exportAssets()">
             <i class="fas fa-download"></i>
             <span>匯出</span>
           </button>
-          <button class="toolbar-btn print-btn">
+          <button class="toolbar-btn print-btn" (click)="printBarcodes()">
             <i class="fas fa-print"></i>
             <span>列印條碼</span>
           </button>
@@ -71,50 +72,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>A008</td>
-            <td>Lenovo ThinkPad X1 Carbon 筆記型電腦</td>
-            <td>電腦設備</td>
-            <td>台北總部 - 業務部</td>
-            <td>陳小華</td>
-            <td>2024-05-06</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>A009</td>
-            <td>Brother MFC-L3750CDW 多功能印表機</td>
-            <td>辦公設備</td>
-            <td>台北總部 - 行政部</td>
-            <td>行政部共用</td>
-            <td>2024-05-06</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>A010</td>
-            <td>ASUS ProArt 顯示器</td>
-            <td>電腦設備</td>
-            <td>台北總部 - 設計部</td>
-            <td>林小美</td>
-            <td>2024-05-06</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>A011</td>
-            <td>Logitech MX Master 3 無線滑鼠</td>
-            <td>電腦周邊</td>
-            <td>台北總部 - 研發部</td>
-            <td>王小明</td>
-            <td>2024-05-06</td>
-          </tr>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>A012</td>
-            <td>Microsoft Surface Pro 8</td>
-            <td>行動裝置</td>
-            <td>台北總部 - 執行長辦公室</td>
-            <td>陳總經理</td>
-            <td>2024-05-06</td>
+          <tr *ngFor="let asset of filteredAssets">
+            <td><input type="checkbox" [(ngModel)]="asset.selected" (change)="toggleAsset(asset)"></td>
+            <td>{{ asset.id }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ asset.category }}</td>
+            <td>{{ asset.location }}</td>
+            <td>{{ asset.custodian }}</td>
+            <td>{{ asset.addDate }}</td>
           </tr>
         </tbody>
       </table>
@@ -122,8 +87,8 @@
 
     <!-- 同時列印 QR Code 和 包含資產基本資訊 -->
     <div class="barcode-options">
-      <label><input type="checkbox"> 同時列印 QR Code</label>
-      <label><input type="checkbox" checked> 包含資產基本資訊</label>
+      <label><input type="checkbox" [(ngModel)]="printQRCode"> 同時列印 QR Code</label>
+      <label><input type="checkbox" [(ngModel)]="includeAssetInfo"> 包含資產基本資訊</label>
     </div>
 
     <!-- 條碼預覽區域 -->
