@@ -250,13 +250,13 @@ export class AssetMaintenanceComponent implements OnInit {
     if (this.showColumnMenu && configMenuContainer && !configMenuContainer.contains(event.target as Node)) {
       this.closeColumnMenu();
     }
-    
+
     // 關閉分類下拉選單
     const categoryDropdown = document.querySelector('.custom-dropdown:nth-child(1)');
     if (this.showCategoryDropdown && categoryDropdown && !event.composedPath().includes(categoryDropdown as EventTarget)) {
       this.showCategoryDropdown = false;
     }
-    
+
     // 關閉狀態下拉選單
     const statusDropdown = document.querySelector('.custom-dropdown:nth-child(2)');
     if (this.showStatusDropdown && statusDropdown && !event.composedPath().includes(statusDropdown as EventTarget)) {
@@ -1006,7 +1006,7 @@ export class AssetMaintenanceComponent implements OnInit {
     const statusName = this.getStatusName(status) || '全部狀態';
     this.snackBar.open(`已篩選為 ${statusName}`, '關閉', { duration: 2000 });
   }
-  
+
   // 重置所有篩選條件
   resetFilters(): void {
     this.searchTerm = '';
@@ -1014,7 +1014,7 @@ export class AssetMaintenanceComponent implements OnInit {
     this.selectedCategoryName = '';
     this.selectedStatus = '';
     this.updatePaginatedAssets();
-    
+
     this.snackBar.open('已重置所有篩選條件', '關閉', { duration: 2000 });
   }
 

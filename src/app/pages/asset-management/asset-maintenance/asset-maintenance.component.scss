@@ -1,9 +1,9 @@
-:host {
+column:host {
   display: block;
   // padding: 20px;
   height: calc(100vh - 64px);
-  overflow: hidden; // 防止整個頁面滾動
-  background-color: #f8f9fa;
+  // overflow: hidden; // 防止整個頁面滾動
+  background-color: #f3f9fa;
   color: #333333;
 }
 
@@ -14,7 +14,6 @@
 .asset-list-card {
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   margin-bottom: 20px;
   display: flex;
@@ -54,6 +53,39 @@
   @media (max-width: 992px) {
     flex-direction: column;
     align-items: stretch;
+    gap: 16px;
+
+    .toolbar-left,
+    .toolbar-right {
+      width: 100%;
+    }
+
+    .toolbar-right {
+      flex-direction: column;
+      gap: 12px;
+
+      .filter-group,
+      .action-group {
+        width: 100%;
+      }
+
+      .custom-dropdown {
+        width: 100%;
+
+        .dropdown-toggle {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+
+      .toolbar-btn {
+        width: 100%;
+        justify-content: center;
+        white-space: nowrap;
+        min-width: fit-content;
+        padding: 0 16px;
+      }
+    }
   }
 
   // 左側搜尋區域
@@ -75,7 +107,7 @@
 
       .search-input {
         width: 100%;
-        padding: 10px 12px 10px 36px;
+        padding: 10px 0px 10px 36px;
         border: 1px solid #ddd;
         border-radius: 6px;
         font-size: 14px;
@@ -314,6 +346,7 @@
     align-items: stretch;
     width: 100%;
   }
+
 }
 
 .search-input {
@@ -431,6 +464,7 @@
   @media (max-width: 576px) {
     justify-content: center;
   }
+
 }
 
 .batch-bar span {

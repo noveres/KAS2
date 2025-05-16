@@ -213,6 +213,7 @@
                 <!-- 操作列 -->
                 <td *ngIf="column.field === 'actions'">
                   <app-action-menu [menuItems]="[
+                     { isTitle: true, label: '資產操作' },
                       { icon: 'fas fa-eye', label: '查看詳情', action: 'view' },
                       { icon: 'fas fa-edit', label: '編輯資產', action: 'edit' },
                       { icon: 'fas fa-history', label: '操作歷史', action: 'history' },

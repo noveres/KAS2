@@ -9,8 +9,13 @@
         <!-- 分隔線 -->
         <li *ngIf="item.isSeparator" class="menu-separator"></li>
         
+        <!-- 標題項目 -->
+        <li *ngIf="item.isTitle" class="menu-title">
+          <span class="title-label">{{item.label || ''}}</span>
+        </li>
+
         <!-- 選單項目 -->
-        <li *ngIf="!item.isSeparator" 
+        <li *ngIf="!item.isSeparator && !item.isTitle" 
             class="menu-item" 
             [ngClass]="{'danger': item.isDanger}"
             (click)="onMenuItemClick(item.action || '', $event)">

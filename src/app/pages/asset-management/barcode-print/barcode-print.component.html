@@ -1,93 +1,143 @@
-<div class="barcode-header">
-  <div class="barcode-title">條碼列印查詢</div>
-</div>
-<div class="barcode-subsection">
-  <div class="barcode-subtitle-row">
-    <div>
-      <div class="barcode-subtitle">今日需列印條碼資產</div>
-      <div class="barcode-desc">2025/5/15 新增的資產，共 5 筆</div>
+<div class="asset-list-wrapper">
+  <div class="asset-list-card">
+    <div class="asset-list-header">
+      <div class="header-title">條碼列印查詢</div>
+      <div class="header-subtitle">管理資產條碼列印</div>
     </div>
-    <div class="barcode-btn-row">
-      <button class="toolbar-btn export-btn"><span class="icon-download"></span>匯出</button>
-      <button class="toolbar-btn print-btn"><span class="icon-print"></span>列印條碼</button>
+
+    <!-- 搜尋和篩選工具列 -->
+    <div class="asset-list-toolbar">
+      <!-- 左側搜尋區域 -->
+      <div class="toolbar-left">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="搜尋資產編號、名稱或保管人…" [(ngModel)]="searchTerm">
+        </div>
+      </div>
+
+      <!-- 右側功能區域 -->
+      <div class="toolbar-right">
+        <!-- 篩選區域 -->
+        <div class="filter-group">
+          <!-- 資產分類下拉選單 -->
+          <div class="custom-dropdown">
+            <button class="dropdown-toggle" (click)="toggleCategoryDropdown()">
+              <i class="fas fa-tags"></i>
+              <span>{{ selectedCategoryName || '資產分類' }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" [class.show]="showCategoryDropdown">
+              <div class="dropdown-item" (click)="handleCategoryFilter('')">
+                <i class="fas fa-list"></i>
+                <span>顯示全部分類</span>
+              </div>
+              <div class="dropdown-item" *ngFor="let category of assetCategories"
+                (click)="handleCategoryFilter(category.id)">
+                <i [class]="getCategoryIcon(category.id)"></i>
+                <span>{{ category.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按鈕 -->
+        <div class="action-buttons">
+          <button class="toolbar-btn export-btn">
+            <i class="fas fa-download"></i>
+            <span>匯出</span>
+          </button>
+          <button class="toolbar-btn print-btn">
+            <i class="fas fa-print"></i>
+            <span>列印條碼</span>
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="barcode-table-wrap">
-    <table class="barcode-table">
-      <thead>
-        <tr>
-          <th><input type="checkbox"></th>
-          <th>資產編號</th>
-          <th>資產名稱</th>
-          <th>分類</th>
-          <th>位置</th>
-          <th>保管人</th>
-          <th>新增日期</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>A008</td>
-          <td>Lenovo ThinkPad X1 Carbon 筆記型電腦</td>
-          <td>電腦設備</td>
-          <td>台北總部 - 業務部</td>
-          <td>陳小華</td>
-          <td>2024-05-06</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>A009</td>
-          <td>Brother MFC-L3750CDW 多功能印表機</td>
-          <td>辦公設備</td>
-          <td>台北總部 - 行政部</td>
-          <td>行政部共用</td>
-          <td>2024-05-06</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>A010</td>
-          <td>ASUS ProArt 顯示器</td>
-          <td>電腦設備</td>
-          <td>台北總部 - 設計部</td>
-          <td>林小美</td>
-          <td>2024-05-06</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>A011</td>
-          <td>Logitech MX Master 3 無線滑鼠</td>
-          <td>電腦周邊</td>
-          <td>台北總部 - 研發部</td>
-          <td>王小明</td>
-          <td>2024-05-06</td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>A012</td>
-          <td>Microsoft Surface Pro 8</td>
-          <td>行動裝置</td>
-          <td>台北總部 - 執行長辦公室</td>
-          <td>陳總經理</td>
-          <td>2024-05-06</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="barcode-options">
-    <label><input type="checkbox"> 同時列印 QR Code</label>
-    <label><input type="checkbox" checked> 包含資產基本資訊</label>
-  </div>
-</div>
-<div class="barcode-preview-section">
-  <div class="barcode-preview-title">條碼預覽</div>
-  <div class="barcode-preview-content">
-    <div class="barcode-sample-box">
-      <div class="barcode-img-placeholder">條碼圖片預覽</div>
-      <div class="barcode-asset-text">
-        <div class="barcode-asset-id">A008</div>
-        <div class="barcode-asset-name">Lenovo ThinkPad X1 Carbon 筆記型電腦</div>
-        <div class="barcode-asset-user">保管人：陳小華</div>
+
+    <!-- 資產表格 -->
+    <div class="asset-table-wrap">
+      <table class="asset-table">
+        <thead>
+          <tr>
+            <th class="checkbox-column">
+              <input type="checkbox" (change)="toggleAllAssets($event)">
+            </th>
+            <th>資產編號</th>
+            <th>資產名稱</th>
+            <th>分類</th>
+            <th>位置</th>
+            <th>保管人</th>
+            <th>新增日期</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>A008</td>
+            <td>Lenovo ThinkPad X1 Carbon 筆記型電腦</td>
+            <td>電腦設備</td>
+            <td>台北總部 - 業務部</td>
+            <td>陳小華</td>
+            <td>2024-05-06</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>A009</td>
+            <td>Brother MFC-L3750CDW 多功能印表機</td>
+            <td>辦公設備</td>
+            <td>台北總部 - 行政部</td>
+            <td>行政部共用</td>
+            <td>2024-05-06</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>A010</td>
+            <td>ASUS ProArt 顯示器</td>
+            <td>電腦設備</td>
+            <td>台北總部 - 設計部</td>
+            <td>林小美</td>
+            <td>2024-05-06</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>A011</td>
+            <td>Logitech MX Master 3 無線滑鼠</td>
+            <td>電腦周邊</td>
+            <td>台北總部 - 研發部</td>
+            <td>王小明</td>
+            <td>2024-05-06</td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>A012</td>
+            <td>Microsoft Surface Pro 8</td>
+            <td>行動裝置</td>
+            <td>台北總部 - 執行長辦公室</td>
+            <td>陳總經理</td>
+            <td>2024-05-06</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 同時列印 QR Code 和 包含資產基本資訊 -->
+    <div class="barcode-options">
+      <label><input type="checkbox"> 同時列印 QR Code</label>
+      <label><input type="checkbox" checked> 包含資產基本資訊</label>
+    </div>
+
+    <!-- 條碼預覽區域 -->
+    <div class="barcode-preview-section">
+      <div class="barcode-preview-title">條碼預覽</div>
+      <div class="barcode-preview-content">
+        <div class="barcode-sample-box">
+          <div class="barcode-img-placeholder">條碼圖片預覽</div>
+          <div class="barcode-asset-text">
+            <div class="barcode-asset-id">A008</div>
+            <div class="barcode-asset-name">Lenovo ThinkPad X1 Carbon 筆記型電腦</div>
+            <div class="barcode-asset-user">保管人：陳小華</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

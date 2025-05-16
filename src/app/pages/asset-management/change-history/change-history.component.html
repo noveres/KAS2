@@ -1,1 +1,80 @@
-<p>change-history works!</p>
+<div class="change-history-container">
+  <mat-card class="history-card">
+    <mat-card-header>
+      <mat-card-title>資產變更歷史</mat-card-title>
+      <mat-card-subtitle>查看資產的所有變更紀錄</mat-card-subtitle>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="exportHistory()">
+          <mat-icon>download</mat-icon>
+          匯出紀錄
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <table mat-table [dataSource]="changeHistory" class="history-table" matSort>
+        <!-- 變更日期 -->
+        <ng-container matColumnDef="changeDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>變更日期</th>
+          <td mat-cell *matCellDef="let history">{{history.changeDate | date:'yyyy-MM-dd HH:mm'}}</td>
+        </ng-container>
+
+        <!-- 資產名稱 -->
+        <ng-container matColumnDef="assetName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>資產名稱</th>
+          <td mat-cell *matCellDef="let history">{{history.assetName}}</td>
+        </ng-container>
+
+        <!-- 變更類型 -->
+        <ng-container matColumnDef="changeType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>變更類型</th>
+          <td mat-cell *matCellDef="let history">{{history.changeType}}</td>
+        </ng-container>
+
+        <!-- 變更人 -->
+        <ng-container matColumnDef="changedBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>變更人</th>
+          <td mat-cell *matCellDef="let history">{{history.changedBy}}</td>
+        </ng-container>
+
+        <!-- 原值 -->
+        <ng-container matColumnDef="oldValue">
+          <th mat-header-cell *matHeaderCellDef>原值</th>
+          <td mat-cell *matCellDef="let history">{{history.oldValue}}</td>
+        </ng-container>
+
+        <!-- 新值 -->
+        <ng-container matColumnDef="newValue">
+          <th mat-header-cell *matHeaderCellDef>新值</th>
+          <td mat-cell *matCellDef="let history">{{history.newValue}}</td>
+        </ng-container>
+
+        <!-- 備註 -->
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef>備註</th>
+          <td mat-cell *matCellDef="let history">{{history.remarks}}</td>
+        </ng-container>
+
+        <!-- 操作 -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let history">
+            <button mat-icon-button color="primary" 
+                    (click)="viewDetails(history)"
+                    matTooltip="查看詳情">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSize]="10"
+                     [pageSizeOptions]="[5, 10, 25, 100]"
+                     showFirstLastButtons>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

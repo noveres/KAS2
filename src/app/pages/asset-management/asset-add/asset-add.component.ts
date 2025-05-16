@@ -204,6 +204,7 @@ export class AssetAddComponent implements OnInit {
       usefulLife: [3],
       depreciationMethod: [''],
       depreciationStartDate: [new Date()],
+      totalProductionUnits: [1000, [Validators.min(1)]], // 預計總產量，用於生產數量法
       supplier: [''],
       purchaseOrderNumber: [''],
       warrantyPeriod: [null]
@@ -224,6 +225,196 @@ export class AssetAddComponent implements OnInit {
 關閉了頁面或刷新了瀏覽器，之前填寫的數據和所在的頁面位置也不會丟失，可以返回到您上次所在的頁面繼續填寫。
   */
 
+  /**
+   * 計算年折舊額（直線法）
+   * @param assetValue 資產價值
+   * @param residualValue 殘值
+   * @param usefulLife 使用年限
+   * @returns 年折舊額
+   */
+  calculateAnnualDepreciation(assetValue: number, residualValue: number, usefulLife: number): number {
+    if (usefulLife <= 0) return 0;
+    return (assetValue - residualValue) / usefulLife;
+  }
+
+  /**
+   * 計算月折舊額
+   * @param annualDepreciation 年折舊額
+   * @returns 月折舊額
+   */
+  calculateMonthlyDepreciation(annualDepreciation: number): number {
+    return annualDepreciation / 12;
+  }
+
+  /**
+   * 計算每日折舊額
+   * @param annualDepreciation 年折舊額
+   * @returns 日折舊額
+   */
+  calculateDailyDepreciation(annualDepreciation: number): number {
+    return annualDepreciation / 365;
+  }
+
+  /**
+   * 計算餘額遞減法的折舊率
+   * @param usefulLife 使用年限
+   * @returns 折舊率
+   */
+  calculateDecliningRate(usefulLife: number): number {
+    // 常用的餘額遞減法折舊率計算公式：2/n，其中n為使用年限
+    return 2 / usefulLife;
+  }
+
+  /**
+   * 計算餘額遞減法的第一年折舊額
+   * @param assetValue 資產價值
+   * @param rate 折舊率
+   * @returns 第一年折舊額
+   */
+  calculateFirstYearDecliningDepreciation(assetValue: number, rate: number): number {
+    return assetValue * rate;
+  }
+
+  /**
+   * 計算生產數量法的單位折舊額
+   * @param assetValue 資產價值
+   * @param residualValue 殘值
+   * @param totalUnits 預計總產量
+   * @returns 單位折舊額
+   */
+  calculateUnitDepreciation(assetValue: number, residualValue: number, totalUnits: number): number {
+    if (totalUnits <= 0) return 0;
+    return (assetValue - residualValue) / totalUnits;
+  }
+
+  // 控制是否顯示折舊計算結果
+  showDepreciationResults: boolean = false;
+
+  // 計算結果對象
+  calculatedResults: {
+    annualDepreciation: string;
+    monthlyDepreciation: string;
+    dailyDepreciation: string;
+    depreciationMethod: string;
+    decliningRate: string;
+    firstYearDepreciation: string;
+    unitDepreciation: string;
+    totalUnits: number;
+    totalDepreciation: string;
+  } = {
+    annualDepreciation: '0.00',
+    monthlyDepreciation: '0.00',
+    dailyDepreciation: '0.00',
+    depreciationMethod: '',
+    decliningRate: '0.00',
+    firstYearDepreciation: '0.00',
+    unitDepreciation: '0.00',
+    totalUnits: 0,
+    totalDepreciation: '0.00'
+  };
+
+  /**
+   * 更新財務計算結果
+   * 根據用戶輸入的資產價值、殘值、使用年限和折舊方法，計算相關的折舊數據
+   */
+  updateFinancialCalculations(): void {
+    const assetValue = this.assetForm.get('assetValue')?.value || 0;
+    const residualValue = this.assetForm.get('residualValue')?.value || 0;
+    const usefulLife = this.assetForm.get('usefulLife')?.value || 0;
+    const depreciationMethod = this.assetForm.get('depreciationMethod')?.value;
+
+    // 重置顯示標誌
+    this.showDepreciationResults = false;
+
+    // 計算並顯示相關財務數據
+    if (assetValue > 0) {
+      // 計算總折舊金額
+      const totalDepreciation = assetValue - residualValue;
+
+      // 初始化計算結果對象
+      this.calculatedResults = {
+        annualDepreciation: '0.00',
+        monthlyDepreciation: '0.00',
+        dailyDepreciation: '0.00',
+        depreciationMethod: depreciationMethod || '',
+        decliningRate: '0.00',
+        firstYearDepreciation: '0.00',
+        unitDepreciation: '0.00',
+        totalUnits: 0,
+        totalDepreciation: totalDepreciation.toFixed(2)
+      };
+
+      // 根據不同折舊方法計算
+      if (depreciationMethod === 'straight' && usefulLife > 0) {
+        // 直線法
+        const annualStraightLineDepreciation = this.calculateAnnualDepreciation(assetValue, residualValue, usefulLife);
+        const monthlyDepreciation = this.calculateMonthlyDepreciation(annualStraightLineDepreciation);
+        const dailyDepreciation = this.calculateDailyDepreciation(annualStraightLineDepreciation);
+
+        this.calculatedResults.annualDepreciation = annualStraightLineDepreciation.toFixed(2);
+        this.calculatedResults.monthlyDepreciation = monthlyDepreciation.toFixed(2);
+        this.calculatedResults.dailyDepreciation = dailyDepreciation.toFixed(2);
+
+        console.log('直線法計算結果：', {
+          資產價值: assetValue,
+          殘值: residualValue,
+          使用年限: usefulLife,
+          年折舊額: this.calculatedResults.annualDepreciation,
+          月折舊額: this.calculatedResults.monthlyDepreciation,
+          日折舊額: this.calculatedResults.dailyDepreciation
+        });
+      } else if (depreciationMethod === 'declining' && usefulLife > 0) {
+        // 餘額遞減法
+        const decliningRate = this.calculateDecliningRate(usefulLife);
+        const firstYearDepreciation = this.calculateFirstYearDecliningDepreciation(assetValue, decliningRate);
+
+        // 計算直線法數據作為參考
+        const annualStraightLineDepreciation = this.calculateAnnualDepreciation(assetValue, residualValue, usefulLife);
+        const monthlyDepreciation = this.calculateMonthlyDepreciation(annualStraightLineDepreciation);
+        const dailyDepreciation = this.calculateDailyDepreciation(annualStraightLineDepreciation);
+
+        this.calculatedResults.annualDepreciation = annualStraightLineDepreciation.toFixed(2);
+        this.calculatedResults.monthlyDepreciation = monthlyDepreciation.toFixed(2);
+        this.calculatedResults.dailyDepreciation = dailyDepreciation.toFixed(2);
+        this.calculatedResults.decliningRate = (decliningRate * 100).toFixed(2);
+        this.calculatedResults.firstYearDepreciation = firstYearDepreciation.toFixed(2);
+
+        console.log('餘額遞減法計算結果：', {
+          折舊率: this.calculatedResults.decliningRate + '%',
+          第一年折舊額: this.calculatedResults.firstYearDepreciation,
+          第一年月折舊額: (firstYearDepreciation / 12).toFixed(2)
+        });
+      } else if (depreciationMethod === 'units') {
+        // 生產數量法
+        // 假設總產量為使用年限 * 1000 (示例值)
+        const totalUnits = usefulLife * 1000;
+        const unitDepreciation = this.calculateUnitDepreciation(assetValue, residualValue, totalUnits);
+
+        // 計算直線法數據作為參考
+        if (usefulLife > 0) {
+          const annualStraightLineDepreciation = this.calculateAnnualDepreciation(assetValue, residualValue, usefulLife);
+          const monthlyDepreciation = this.calculateMonthlyDepreciation(annualStraightLineDepreciation);
+          const dailyDepreciation = this.calculateDailyDepreciation(annualStraightLineDepreciation);
+
+          this.calculatedResults.annualDepreciation = annualStraightLineDepreciation.toFixed(2);
+          this.calculatedResults.monthlyDepreciation = monthlyDepreciation.toFixed(2);
+          this.calculatedResults.dailyDepreciation = dailyDepreciation.toFixed(2);
+        }
+
+        this.calculatedResults.unitDepreciation = unitDepreciation.toFixed(2);
+        this.calculatedResults.totalUnits = totalUnits;
+
+        console.log('生產數量法計算結果：', {
+          總產量: totalUnits,
+          單位折舊額: this.calculatedResults.unitDepreciation
+        });
+      }
+
+      // 顯示計算結果
+      this.showDepreciationResults = true;
+    }
+  }
+
   ngOnInit(): void {
     // 先嘗試從 localStorage 加載儲存的表單狀態
     this.loadFormState();
@@ -241,6 +432,14 @@ export class AssetAddComponent implements OnInit {
       this.assetForm.patchValue({ assetDetailCategory: '' });
       this.selectedDetailCategories = subCategory ? this.assetDetailCategories[subCategory] || [] : [];
       this.saveFormState();
+    });
+
+    // 監聽財務相關欄位變化，自動計算折舊
+    const financialFields = ['assetValue', 'residualValue', 'usefulLife', 'depreciationMethod'];
+    financialFields.forEach(field => {
+      this.assetForm.get(field)?.valueChanges.subscribe(() => {
+        this.updateFinancialCalculations();
+      });
     });
 
     // 監聽所有表單控件的變化並儲存狀態
@@ -322,6 +521,9 @@ export class AssetAddComponent implements OnInit {
         page.classList.remove('active');
       }
     });
+
+    // 在切換Tab時儲存表單狀態
+    this.saveFormState();
   }
 
   // 下一步
@@ -343,26 +545,26 @@ export class AssetAddComponent implements OnInit {
     if (this.assetForm.valid) {
       // 取得表單所有值，包括已禁用的控件
       const formValues = {...this.assetForm.getRawValue()};
-      
+
       // 移除資產編號，因為它將由後端生成
       delete formValues.assetNumber;
-      
+
       console.log('資產新增表單已提交', formValues);
-      
+
       // 模擬後端 API 調用
       setTimeout(() => {
         // 模擬後端生成的資產編號
         const generatedAssetNumber = this.generateAssetNumber();
-        
+
         // 清除儲存的表單狀態
         localStorage.removeItem('assetAddFormState');
-        
+
         // 重置表單
         this.assetForm.reset();
-        
+
         // 重置頁面索引為第一頁
         this.switchTab(0);
-        
+
         // 顯示成功訊息，包含系統生成的資產編號
         alert(`資產新增成功！\n系統已自動生成資產編號: ${generatedAssetNumber}`);
       }, 500);
@@ -393,7 +595,7 @@ export class AssetAddComponent implements OnInit {
       this.assetForm.patchValue({ [controlName]: fileName });
     }
   }
-  
+
   // 模擬後端生成資產編號的方法
   generateAssetNumber(): string {
     // 生成格式為 'A' + 年份後兩位 + 月份 + 5位隨機數字
@@ -401,7 +603,7 @@ export class AssetAddComponent implements OnInit {
     const year = now.getFullYear().toString().slice(2);
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const randomNum = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
-    
+
     return `A${year}${month}${randomNum}`;
   }
 }

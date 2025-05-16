@@ -1,0 +1,83 @@
+.change-history-container {
+  padding: 20px;
+
+  .history-card {
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .mat-mdc-card-header-text {
+        flex: 1;
+      }
+
+      .header-actions {
+        button {
+          mat-icon {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+
+    .history-table {
+      width: 100%;
+
+      th {
+        background-color: #f5f5f5;
+        color: #333;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 12px 16px;
+      }
+
+      tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      .mat-column-actions {
+        width: 60px;
+        text-align: center;
+      }
+    }
+
+    mat-paginator {
+      margin-top: 20px;
+    }
+  }
+}
+
+// 響應式設計
+@media screen and (max-width: 768px) {
+  .change-history-container {
+    padding: 10px;
+
+    .history-card {
+      mat-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .header-actions {
+          margin-top: 10px;
+          width: 100%;
+
+          button {
+            width: 100%;
+          }
+        }
+      }
+
+      .history-table {
+        display: block;
+        overflow-x: auto;
+
+        th, td {
+          min-width: 120px;
+        }
+      }
+    }
+  }
+}

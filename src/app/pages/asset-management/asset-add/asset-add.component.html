@@ -1,5 +1,5 @@
 
-  <nav class="tabs-nav">
+<nav class="tabs-nav">
     <div class="tab-item" [class.active]="activeTabIndex === 0" (click)="switchTab(0)">基本資料</div>
     <div class="tab-item" [class.active]="activeTabIndex === 1" (click)="switchTab(1)">明細資料</div>
     <div class="tab-item" [class.active]="activeTabIndex === 2" (click)="switchTab(2)">財務資料</div>
@@ -194,7 +194,7 @@
           </label>
         </div>
         <div class="form-col">
-          <label>預值
+          <label>殘值
             <input type="number" formControlName="residualValue" placeholder="NT$0">
           </label>
         </div>
@@ -225,6 +225,57 @@
               <input type="date" formControlName="depreciationStartDate" class="with-calendar">
             </div>
           </label>
+        </div>
+      </div>
+
+      <!-- 生產數量法相關欄位，只在選擇生產數量法時顯示 -->
+      <div class="form-row" *ngIf="assetForm.get('depreciationMethod')?.value === 'units'">
+        <div class="form-col">
+          <label>預計總產量
+            <input type="number" formControlName="totalProductionUnits" placeholder="請輸入預計總產量">
+          </label>
+          <div class="info-message">生產數量法需要設定預計總產量以計算單位折舊額</div>
+        </div>
+      </div>
+
+      <!-- 折舊計算結果顯示區域 -->
+      <div class="form-row calculation-results" *ngIf="showDepreciationResults">
+        <div class="calculation-card">
+          <div class="calculation-title">折舊計算結果</div>
+          <div class="calculation-content">
+            <div class="calculation-row">
+              <div class="calculation-label">總折舊金額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.totalDepreciation}}</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'straight' || calculatedResults.annualDepreciation !== '0.00'">
+              <div class="calculation-label">年折舊額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.annualDepreciation}}</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'straight' || calculatedResults.monthlyDepreciation !== '0.00'">
+              <div class="calculation-label">月折舊額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.monthlyDepreciation}}</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'straight' || calculatedResults.dailyDepreciation !== '0.00'">
+              <div class="calculation-label">日折舊額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.dailyDepreciation}}</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'declining'">
+              <div class="calculation-label">折舊率：</div>
+              <div class="calculation-value">{{calculatedResults.decliningRate}}%</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'declining'">
+              <div class="calculation-label">第一年折舊額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.firstYearDepreciation}}</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'units'">
+              <div class="calculation-label">預計總產量：</div>
+              <div class="calculation-value">{{calculatedResults.totalUnits}} 單位</div>
+            </div>
+            <div class="calculation-row" *ngIf="calculatedResults.depreciationMethod === 'units'">
+              <div class="calculation-label">單位折舊額：</div>
+              <div class="calculation-value">NT$ {{calculatedResults.unitDepreciation}}/單位</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-row">

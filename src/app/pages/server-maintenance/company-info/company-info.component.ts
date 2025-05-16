@@ -86,7 +86,7 @@ export class CompanyInfoComponent implements OnInit {
   openCompanyModal(companyCode: string = ''): void {
     this.isEditMode = !!companyCode;
     this.currentCompanyCode = companyCode;
-    
+
     if (this.isEditMode) {
       const company = this.companies.find(c => c.code === companyCode);
       if (company) {
@@ -95,7 +95,7 @@ export class CompanyInfoComponent implements OnInit {
     } else {
       this.companyForm.reset({isActive: true});
     }
-    
+
     this.showModal = true;
   }
 
@@ -106,9 +106,9 @@ export class CompanyInfoComponent implements OnInit {
 
   saveCompany(): void {
     if (this.companyForm.invalid) return;
-    
+
     const formValue = this.companyForm.value;
-    
+
     if (this.isEditMode) {
       // 更新現有公司
       const index = this.companies.findIndex(c => c.code === this.currentCompanyCode);
@@ -119,7 +119,7 @@ export class CompanyInfoComponent implements OnInit {
       // 新增公司
       this.companies.push({...formValue});
     }
-    
+
     this.closeModal();
   }
 
