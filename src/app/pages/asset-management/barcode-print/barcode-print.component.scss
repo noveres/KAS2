@@ -1,5 +1,6 @@
 .asset-list-wrapper {
   padding: 20px;
+  box-sizing: border-box;
 
   .asset-list-card {
     background: white;
@@ -30,8 +31,13 @@
       border-bottom: 1px solid #eee;
 
       .toolbar-left {
+        width: 100%;
+        max-width: 300px;
+        
         .search-box {
           position: relative;
+          width: 100%;
+          box-sizing: border-box;
 
           .search-icon {
             position: absolute;
@@ -45,8 +51,10 @@
             padding: 8px 12px 8px 36px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            width: 300px;
+            width: 100%;
+            max-width: 100%;
             font-size: 14px;
+            box-sizing: border-box;
 
             &:focus {
               outline: none;
@@ -569,47 +577,164 @@
 
 
 @media (max-width: 900px) {
-  .barcode-list-card {
-    padding: 10px 2vw 17px 2vw;
+  .asset-list-wrapper {
+    padding: 10px;
   }
 
-  .barcode-btn-row {
-    gap: 4px;
-  }
+  .asset-list-card {
+    .asset-list-toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
 
-  .barcode-table th,
-  .barcode-table td {
-    padding: 8px 4px;
-  }
+      .toolbar-left {
+        width: 100%;
 
-  .barcode-img-placeholder {
-    width: 170px;
-    font-size: 1rem;
+        .search-box {
+          width: 100%;
+          box-sizing: border-box;
+
+          .search-input {
+            width: 100%;
+            max-width: 100%;
+          }
+        }
+      }
+
+      .toolbar-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    .asset-table-wrap {
+      overflow-x: auto;
+      .asset-table {
+        th,
+        td {
+          padding: 8px 4px;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .barcode-preview-section {
+      .barcode-preview-content {
+        .barcode-sample-box {
+          width: 250px;
+
+          .barcode-img-placeholder {
+            height: 80px;
+          }
+        }
+      }
+    }
   }
 }
 
 @media (max-width: 600px) {
-  .barcode-list-card {
-    padding: 5px 2px;
+  .asset-list-wrapper {
+    padding: 8px;
   }
 
-  .barcode-table th,
-  .barcode-table td {
-    font-size: 0.96rem;
-  }
+  .asset-list-card {
+    border-radius: 4px;
 
-  .barcode-btn-row .toolbar-btn {
-    padding: 0 7px;
-    min-width: 72px;
-    font-size: 0.96rem;
-  }
+    .asset-list-header {
+      padding: 15px;
 
-  .barcode-img-placeholder {
-    width: 100px;
-    font-size: 0.92rem;
-  }
+      .header-title {
+        font-size: 20px;
+      }
+    }
 
-  .barcode-sample-box {
-    gap: 7px;
+    .asset-list-toolbar {
+      padding: 12px 15px;
+
+      .toolbar-right {
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .filter-group {
+          width: 100%;
+          margin-bottom: 8px;
+
+          .custom-dropdown {
+            width: 100%;
+
+            .dropdown-toggle {
+              width: 100%;
+              justify-content: space-between;
+            }
+
+
+          }
+        }
+
+        .action-buttons {
+          width: 100%;
+          justify-content: space-between;
+
+          .toolbar-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+            flex: 1;
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .asset-table-wrap {
+      padding: 10px;
+      overflow-x: auto;
+
+      .asset-table {
+        min-width: 600px;
+
+        th, td {
+          padding: 8px 4px;
+          font-size: 13px;
+        }
+      }
+    }
+
+    .barcode-options {
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px;
+    }
+
+    .barcode-preview-section {
+      padding: 15px;
+
+      .barcode-preview-title {
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+
+      .barcode-preview-content {
+        .barcode-sample-box {
+          width: 200px;
+          padding: 15px;
+
+          .barcode-img-placeholder {
+            height: 70px;
+            font-size: 13px;
+          }
+
+          .barcode-asset-text {
+            .barcode-asset-id {
+              font-size: 16px;
+            }
+
+            .barcode-asset-name,
+            .barcode-asset-user {
+              font-size: 13px;
+            }
+          }
+        }
+      }
+    }
   }
 }

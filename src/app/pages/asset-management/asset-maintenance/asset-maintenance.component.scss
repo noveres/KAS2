@@ -1,14 +1,19 @@
 column:host {
   display: block;
-  // padding: 20px;
   height: calc(100vh - 64px);
-  // overflow: hidden; // 防止整個頁面滾動
   background-color: #f3f9fa;
   color: #333333;
+  box-sizing: border-box;
 }
 
 .asset-list-wrapper {
   margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 10px;
+  
+  @media (min-width: 768px) {
+    padding: 0 20px;
+  }
 }
 
 .asset-list-card {
@@ -19,11 +24,22 @@ column:host {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 104px); // 留出上方的padding和下方的一點空間
+  box-sizing: border-box;
+  
+  @media (max-width: 576px) {
+    height: calc(100vh - 84px);
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
 }
 
 .asset-list-header {
   padding: 20px;
   border-bottom: 1px solid #eaeaea;
+  
+  @media (max-width: 576px) {
+    padding: 15px;
+  }
 }
 
 .header-title {
@@ -31,11 +47,19 @@ column:host {
   font-weight: bold;
   margin-bottom: 5px;
   color: #333333;
+  
+  @media (max-width: 576px) {
+    font-size: 18px;
+  }
 }
 
 .header-subtitle {
   font-size: 14px;
   color: #777;
+  
+  @media (max-width: 576px) {
+    font-size: 13px;
+  }
 }
 
 .asset-list-toolbar {
@@ -49,6 +73,20 @@ column:host {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    margin: 15px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+  
+  @media (max-width: 576px) {
+    margin: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+  }
 
   @media (max-width: 992px) {
     flex-direction: column;
@@ -92,6 +130,15 @@ column:host {
   .toolbar-left {
     flex: 1;
     min-width: 250px;
+    box-sizing: border-box;
+    
+    @media (max-width: 768px) {
+      min-width: 100%;
+    }
+    
+    @media (max-width: 576px) {
+      min-width: 100%;
+    }
 
     .search-box {
       position: relative;
@@ -112,6 +159,7 @@ column:host {
         border-radius: 6px;
         font-size: 14px;
         transition: all 0.2s;
+        box-sizing: border-box;
 
         &:focus {
           outline: none;
@@ -460,6 +508,21 @@ column:host {
   gap: 10px;
   margin: 0 20px 20px 20px;
   flex-wrap: wrap;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 10px 12px;
+    margin: 0 15px 15px 15px;
+  }
+  
+  @media (max-width: 576px) {
+    padding: 8px 10px;
+    margin: 0 10px 10px 10px;
+    border-radius: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 
   @media (max-width: 576px) {
     justify-content: center;
@@ -483,6 +546,14 @@ column:host {
   margin-right: 3px;
   font-weight: 500;
   transition: all 0.2s;
+  
+  @media (max-width: 576px) {
+    width: 100%;
+    padding: 8px 10px;
+    margin-right: 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
 
   &:hover {
     background: #d0e0ff;
@@ -506,6 +577,15 @@ column:host {
   margin-left: auto;
   cursor: pointer;
   transition: color 0.2s;
+  
+  @media (max-width: 576px) {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    border-top: 1px solid #e0e0ff;
+    margin-top: 5px;
+  }
 
   &:hover {
     color: #333;
@@ -841,12 +921,24 @@ table tr td button {
 
 .table-pagination {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin: 0 20px;
-  padding: 15px 0;
-  border-top: 1px solid #eaeaea;
-  background: #ffffff;
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 12px 15px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  @media (max-width: 576px) {
+    padding: 10px;
+    flex-direction: column;
+    gap: 8px;
+  }
 
   ::ng-deep .mat-mdc-paginator {
     width: 100%;
